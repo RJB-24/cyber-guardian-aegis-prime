@@ -1,9 +1,8 @@
-
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Alert, Shield, Zap, Clock } from 'lucide-react';
+import { AlertTriangle, Shield, Zap, Clock } from 'lucide-react';
 
 interface Threat {
   id: string;
@@ -55,7 +54,7 @@ export const ThreatFeed = ({ threats, isRealTime = true }: ThreatFeedProps) => {
 
   const getSeverityIcon = (severity: string) => {
     switch (severity) {
-      case 'critical': return Alert;
+      case 'critical': return AlertTriangle;
       case 'high': return Shield;
       case 'medium': return Zap;
       default: return Clock;
@@ -67,7 +66,7 @@ export const ThreatFeed = ({ threats, isRealTime = true }: ThreatFeedProps) => {
       <CardHeader>
         <CardTitle className="text-foreground flex items-center justify-between">
           <span className="flex items-center">
-            <Alert className="mr-2 h-5 w-5 text-primary" />
+            <AlertTriangle className="mr-2 h-5 w-5 text-primary" />
             AI Threat Intelligence Feed
           </span>
           {isRealTime && (
