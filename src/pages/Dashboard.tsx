@@ -2,26 +2,37 @@
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Shield, Activity, Zap, Bell, Clock, Search } from 'lucide-react';
-import { generateMockThreats, generateMockCountermeasures, ThreatData, CountermeasureData } from '@/utils/mockData';
+import { Button } from '@/components/ui/button';
+import { Shield, Activity, Zap, Bell, Clock, Search, Crown, Swords } from 'lucide-react';
+import { fetchThreatAnalysis, fetchCountermeasures } from '@/utils/threatDetection';
+import { useRealTimeThreats } from '@/hooks/useRealTimeThreats';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 
 const Dashboard = () => {
-  const [threats, setThreats] = useState<ThreatData[]>([]);
-  const [countermeasures, setCountermeasures] = useState<CountermeasureData[]>([]);
-  const [systemHealth, setSystemHealth] = useState(98);
+  const [threats, setThreats] = useState<any[]>([]);
+  const [countermeasures, setCountermeasures] = useState<any[]>([]);
+  const { 
+    isActive, 
+    threatCount, 
+    countermeasureCount, 
+    systemHealth, 
+    startMonitoring, 
+    stopMonitoring,
+    simulateAttackScenario 
+  } = useRealTimeThreats();
 
   useEffect(() => {
-    const threatData = generateMockThreats();
-    const countermeasureData = generateMockCountermeasures(threatData);
-    setThreats(threatData);
-    setCountermeasures(countermeasureData);
+    const loadData = async () => {
+      const threatsData = await fetchThreatAnalysis();
+      const countermeasuresData = await fetchCountermeasures();
+      setThreats(threatsData);
+      setCountermeasures(countermeasuresData);
+    };
 
-    // Simulate real-time updates
-    const interval = setInterval(() => {
-      setSystemHealth(prev => Math.max(85, Math.min(100, prev + (Math.random() - 0.5) * 2)));
-    }, 3000);
-
+    loadData();
+    
+    // Refresh data every 10 seconds
+    const interval = setInterval(loadData, 10000);
     return () => clearInterval(interval);
   }, []);
 
@@ -36,96 +47,155 @@ const Dashboard = () => {
   }));
 
   const severityData = [
-    { name: 'Low', value: threats.filter(t => t.severity === 'low').length, color: '#39FF14' },
-    { name: 'Medium', value: threats.filter(t => t.severity === 'medium').length, color: '#FBB036' },
-    { name: 'High', value: threats.filter(t => t.severity === 'high').length, color: '#FF6B6B' },
-    { name: 'Critical', value: threats.filter(t => t.severity === 'critical').length, color: '#FF0000' }
+    { name: 'Low', value: threats.filter(t => t.severity === 'low').length, color: '#22C55E' },
+    { name: 'Medium', value: threats.filter(t => t.severity === 'medium').length, color: '#F59E0B' },
+    { name: 'High', value: threats.filter(t => t.severity === 'high').length, color: '#EF4444' },
+    { name: 'Critical', value: threats.filter(t => t.severity === 'critical').length, color: '#DC2626' }
   ];
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
-      case 'low': return 'bg-green-500/20 text-green-400 border-green-500/30';
-      case 'medium': return 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30';
-      case 'high': return 'bg-orange-500/20 text-orange-400 border-orange-500/30';
-      case 'critical': return 'bg-red-500/20 text-red-400 border-red-500/30';
+      case 'low': return 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30';
+      case 'medium': return 'bg-amber-500/20 text-amber-400 border-amber-500/30';
+      case 'high': return 'bg-red-500/20 text-red-400 border-red-500/30';
+      case 'critical': return 'bg-red-600/20 text-red-300 border-red-600/30 threat-glow';
       default: return 'bg-gray-500/20 text-gray-400 border-gray-500/30';
     }
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'neutralized': return 'bg-green-500/20 text-green-400 border-green-500/30';
-      case 'investigating': return 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30';
-      case 'detected': return 'bg-orange-500/20 text-orange-400 border-orange-500/30';
-      case 'predicted': return 'bg-blue-500/20 text-blue-400 border-blue-500/30';
+      case 'neutralized': return 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30';
+      case 'investigating': return 'bg-amber-500/20 text-amber-400 border-amber-500/30';
+      case 'detected': return 'bg-red-500/20 text-red-400 border-red-500/30';
+      case 'predicted': return 'bg-primary/20 text-primary border-primary/30 safe-glow';
       default: return 'bg-gray-500/20 text-gray-400 border-gray-500/30';
     }
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Command Center</h1>
-          <p className="text-muted-foreground">Real-time threat monitoring and autonomous defense coordination</p>
+          <h1 className="text-4xl font-bold royal-text flex items-center gap-3">
+            <Crown className="h-10 w-10" />
+            Command Center
+          </h1>
+          <p className="text-muted-foreground mt-2 text-lg">
+            Real-time threat monitoring and autonomous defense coordination
+          </p>
         </div>
-        <div className="flex items-center space-x-2">
-          <div className={`h-3 w-3 rounded-full ${systemHealth > 95 ? 'bg-green-500 animate-pulse-green' : systemHealth > 85 ? 'bg-yellow-500' : 'bg-red-500 animate-pulse-red'}`}></div>
-          <span className="text-primary font-mono">{systemHealth.toFixed(1)}% OPERATIONAL</span>
+        <div className="flex items-center space-x-4">
+          <div className={`h-4 w-4 rounded-full ${
+            systemHealth > 95 ? 'bg-emerald-500 safe-glow animate-pulse-royal' : 
+            systemHealth > 85 ? 'bg-amber-500 warning-glow' : 
+            'bg-red-500 threat-glow'
+          }`}></div>
+          <span className="text-primary font-bold text-lg tracking-wide">
+            {systemHealth.toFixed(1)}% OPERATIONAL
+          </span>
+          <Button
+            onClick={isActive ? stopMonitoring : startMonitoring}
+            className={isActive ? 'bg-red-600 hover:bg-red-700' : 'bg-primary hover:bg-primary/80'}
+          >
+            {isActive ? 'Stop Monitoring' : 'Start Monitoring'}
+          </Button>
         </div>
       </div>
 
+      {/* Attack Simulation Controls */}
+      <Card className="glass-effect border-primary/20 royal-gradient">
+        <CardHeader>
+          <CardTitle className="text-foreground flex items-center">
+            <Swords className="mr-2 h-5 w-5 text-primary" />
+            Attack Simulation Controls
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex gap-4">
+            <Button
+              variant="outline"
+              onClick={() => simulateAttackScenario('ddos')}
+              className="hover:border-red-500/50 hover:text-red-400"
+            >
+              Simulate DDoS Attack
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => simulateAttackScenario('portscan')}
+              className="hover:border-amber-500/50 hover:text-amber-400"
+            >
+              Port Scan Attack
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => simulateAttackScenario('malware')}
+              className="hover:border-red-500/50 hover:text-red-400"
+            >
+              Malware Infiltration
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => simulateAttackScenario('apt')}
+              className="hover:border-purple-500/50 hover:text-purple-400"
+            >
+              APT Campaign
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Key Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <Card className="bg-card/50 border-border/50 hover:border-primary/30 transition-all duration-300">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <Card className="glass-effect border-primary/20 hover:border-primary/40 transition-all duration-300 royal-gradient">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
             <CardTitle className="text-sm font-medium text-muted-foreground">Active Threats</CardTitle>
-            <Bell className="h-4 w-4 text-destructive" />
+            <Bell className="h-5 w-5 text-destructive" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-destructive">{criticalThreats}</div>
-            <p className="text-xs text-muted-foreground">Critical severity requiring immediate response</p>
+            <div className="text-3xl font-bold text-destructive">{criticalThreats + threatCount}</div>
+            <p className="text-xs text-muted-foreground mt-1">Critical severity requiring immediate response</p>
           </CardContent>
         </Card>
 
-        <Card className="bg-card/50 border-border/50 hover:border-primary/30 transition-all duration-300">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <Card className="glass-effect border-primary/20 hover:border-primary/40 transition-all duration-300 royal-gradient">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
             <CardTitle className="text-sm font-medium text-muted-foreground">Countermeasures Deployed</CardTitle>
-            <Shield className="h-4 w-4 text-primary" />
+            <Shield className="h-5 w-5 text-primary" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-primary">{activeMeasures}</div>
-            <p className="text-xs text-muted-foreground">Autonomous responses currently active</p>
+            <div className="text-3xl font-bold text-primary">{activeMeasures + countermeasureCount}</div>
+            <p className="text-xs text-muted-foreground mt-1">Autonomous responses currently active</p>
           </CardContent>
         </Card>
 
-        <Card className="bg-card/50 border-border/50 hover:border-primary/30 transition-all duration-300">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <Card className="glass-effect border-primary/20 hover:border-primary/40 transition-all duration-300 royal-gradient">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
             <CardTitle className="text-sm font-medium text-muted-foreground">Prediction Accuracy</CardTitle>
-            <Search className="h-4 w-4 text-primary" />
+            <Search className="h-5 w-5 text-primary" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-primary">{predictionAccuracy}%</div>
-            <p className="text-xs text-muted-foreground">AI model confidence in threat predictions</p>
+            <div className="text-3xl font-bold text-primary">{predictionAccuracy}%</div>
+            <p className="text-xs text-muted-foreground mt-1">AI model confidence in threat predictions</p>
           </CardContent>
         </Card>
 
-        <Card className="bg-card/50 border-border/50 hover:border-primary/30 transition-all duration-300">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <Card className="glass-effect border-primary/20 hover:border-primary/40 transition-all duration-300 royal-gradient">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
             <CardTitle className="text-sm font-medium text-muted-foreground">Response Time</CardTitle>
-            <Zap className="h-4 w-4 text-primary" />
+            <Zap className="h-5 w-5 text-primary" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-primary">&lt;12ms</div>
-            <p className="text-xs text-muted-foreground">Average autonomous response latency</p>
+            <div className="text-3xl font-bold text-primary">&lt;6ms</div>
+            <p className="text-xs text-muted-foreground mt-1">Average autonomous response latency</p>
           </CardContent>
         </Card>
       </div>
 
       {/* Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="bg-card/50 border-border/50">
+        <Card className="glass-effect border-primary/20">
           <CardHeader>
             <CardTitle className="text-foreground flex items-center">
               <Activity className="mr-2 h-5 w-5 text-primary" />
@@ -138,14 +208,14 @@ const Dashboard = () => {
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                 <XAxis dataKey="hour" stroke="hsl(var(--muted-foreground))" />
                 <YAxis stroke="hsl(var(--muted-foreground))" />
-                <Line type="monotone" dataKey="threats" stroke="#FF0000" strokeWidth={2} />
-                <Line type="monotone" dataKey="prevented" stroke="#39FF14" strokeWidth={2} />
+                <Line type="monotone" dataKey="threats" stroke="#DC2626" strokeWidth={3} />
+                <Line type="monotone" dataKey="prevented" stroke="#9333EA" strokeWidth={3} />
               </LineChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>
 
-        <Card className="bg-card/50 border-border/50">
+        <Card className="glass-effect border-primary/20">
           <CardHeader>
             <CardTitle className="text-foreground flex items-center">
               <Shield className="mr-2 h-5 w-5 text-primary" />
@@ -176,16 +246,16 @@ const Dashboard = () => {
 
       {/* Recent Activity */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="bg-card/50 border-border/50">
+        <Card className="glass-effect border-primary/20">
           <CardHeader>
             <CardTitle className="text-foreground">Recent Threat Predictions</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-3 max-h-96 overflow-y-auto">
+            <div className="space-y-4 max-h-96 overflow-y-auto">
               {threats.slice(0, 5).map((threat) => (
-                <div key={threat.id} className="flex items-center justify-between p-3 bg-muted/20 rounded-lg border border-border/30">
+                <div key={threat.id} className="flex items-center justify-between p-4 bg-muted/10 rounded-xl border border-border/30 hover:border-primary/30 transition-all">
                   <div className="flex-1">
-                    <div className="flex items-center space-x-2 mb-1">
+                    <div className="flex items-center space-x-2 mb-2">
                       <Badge className={getSeverityColor(threat.severity)}>
                         {threat.severity.toUpperCase()}
                       </Badge>
@@ -193,12 +263,12 @@ const Dashboard = () => {
                         {threat.status.toUpperCase()}
                       </Badge>
                     </div>
-                    <p className="text-sm text-foreground font-medium">{threat.type}</p>
+                    <p className="text-sm text-foreground font-medium">{threat.threat_type}</p>
                     <p className="text-xs text-muted-foreground">{threat.description}</p>
                     <p className="text-xs text-muted-foreground mt-1">Confidence: {threat.confidence}%</p>
                   </div>
                   <div className="text-xs text-muted-foreground">
-                    {new Date(threat.timestamp).toLocaleTimeString()}
+                    {new Date(threat.created_at).toLocaleTimeString()}
                   </div>
                 </div>
               ))}
@@ -206,20 +276,20 @@ const Dashboard = () => {
           </CardContent>
         </Card>
 
-        <Card className="bg-card/50 border-border/50">
+        <Card className="glass-effect border-primary/20">
           <CardHeader>
             <CardTitle className="text-foreground">Active Countermeasures</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-3 max-h-96 overflow-y-auto">
+            <div className="space-y-4 max-h-96 overflow-y-auto">
               {countermeasures.slice(0, 5).map((measure) => (
-                <div key={measure.id} className="flex items-center justify-between p-3 bg-muted/20 rounded-lg border border-border/30">
+                <div key={measure.id} className="flex items-center justify-between p-4 bg-muted/10 rounded-xl border border-border/30 hover:border-primary/30 transition-all">
                   <div className="flex-1">
-                    <div className="flex items-center space-x-2 mb-1">
-                      <Badge className={measure.status === 'successful' ? 'bg-green-500/20 text-green-400 border-green-500/30' : 
-                                      measure.status === 'deployed' ? 'bg-blue-500/20 text-blue-400 border-blue-500/30' :
+                    <div className="flex items-center space-x-2 mb-2">
+                      <Badge className={measure.status === 'successful' ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' : 
+                                      measure.status === 'deployed' ? 'bg-primary/20 text-primary border-primary/30' :
                                       measure.status === 'failed' ? 'bg-red-500/20 text-red-400 border-red-500/30' :
-                                      'bg-yellow-500/20 text-yellow-400 border-yellow-500/30'}>
+                                      'bg-amber-500/20 text-amber-400 border-amber-500/30'}>
                         {measure.status.toUpperCase()}
                       </Badge>
                     </div>
@@ -228,7 +298,7 @@ const Dashboard = () => {
                     <p className="text-xs text-muted-foreground mt-1">Impact: {measure.impact}</p>
                   </div>
                   <div className="text-xs text-muted-foreground">
-                    {new Date(measure.timestamp).toLocaleTimeString()}
+                    {new Date(measure.created_at).toLocaleTimeString()}
                   </div>
                 </div>
               ))}

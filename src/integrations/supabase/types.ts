@@ -9,7 +9,172 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      analytics_summary: {
+        Row: {
+          avg_response_time: number | null
+          created_at: string
+          date: string
+          false_positives: number | null
+          id: string
+          prediction_accuracy: number | null
+          system_health: number | null
+          threats_prevented: number | null
+          total_threats: number | null
+        }
+        Insert: {
+          avg_response_time?: number | null
+          created_at?: string
+          date: string
+          false_positives?: number | null
+          id?: string
+          prediction_accuracy?: number | null
+          system_health?: number | null
+          threats_prevented?: number | null
+          total_threats?: number | null
+        }
+        Update: {
+          avg_response_time?: number | null
+          created_at?: string
+          date?: string
+          false_positives?: number | null
+          id?: string
+          prediction_accuracy?: number | null
+          system_health?: number | null
+          threats_prevented?: number | null
+          total_threats?: number | null
+        }
+        Relationships: []
+      }
+      countermeasures: {
+        Row: {
+          action: string
+          created_at: string
+          deployment_time: string | null
+          description: string | null
+          id: string
+          impact: string | null
+          status: string
+          threat_id: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          deployment_time?: string | null
+          description?: string | null
+          id?: string
+          impact?: string | null
+          status?: string
+          threat_id?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          deployment_time?: string | null
+          description?: string | null
+          id?: string
+          impact?: string | null
+          status?: string
+          threat_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "countermeasures_threat_id_fkey"
+            columns: ["threat_id"]
+            isOneToOne: false
+            referencedRelation: "threat_analysis"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      network_logs: {
+        Row: {
+          created_at: string
+          destination_ip: unknown
+          id: string
+          payload_size: number | null
+          port: number | null
+          protocol: string
+          raw_data: Json | null
+          source_ip: unknown
+          timestamp: string
+        }
+        Insert: {
+          created_at?: string
+          destination_ip: unknown
+          id?: string
+          payload_size?: number | null
+          port?: number | null
+          protocol: string
+          raw_data?: Json | null
+          source_ip: unknown
+          timestamp: string
+        }
+        Update: {
+          created_at?: string
+          destination_ip?: unknown
+          id?: string
+          payload_size?: number | null
+          port?: number | null
+          protocol?: string
+          raw_data?: Json | null
+          source_ip?: unknown
+          timestamp?: string
+        }
+        Relationships: []
+      }
+      threat_analysis: {
+        Row: {
+          anomaly_score: number | null
+          confidence: number
+          created_at: string
+          description: string | null
+          id: string
+          isolation_forest_score: number | null
+          log_id: string | null
+          lstm_score: number | null
+          random_forest_prediction: string | null
+          severity: string
+          status: string
+          threat_type: string
+        }
+        Insert: {
+          anomaly_score?: number | null
+          confidence: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          isolation_forest_score?: number | null
+          log_id?: string | null
+          lstm_score?: number | null
+          random_forest_prediction?: string | null
+          severity: string
+          status?: string
+          threat_type: string
+        }
+        Update: {
+          anomaly_score?: number | null
+          confidence?: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          isolation_forest_score?: number | null
+          log_id?: string | null
+          lstm_score?: number | null
+          random_forest_prediction?: string | null
+          severity?: string
+          status?: string
+          threat_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "threat_analysis_log_id_fkey"
+            columns: ["log_id"]
+            isOneToOne: false
+            referencedRelation: "network_logs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
