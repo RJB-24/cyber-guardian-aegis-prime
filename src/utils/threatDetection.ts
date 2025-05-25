@@ -372,7 +372,12 @@ export async function fetchThreatAnalysis(): Promise<ThreatAnalysis[]> {
       return [];
     }
     
-    return data || [];
+    // Type assertion to ensure proper typing
+    return (data || []).map(item => ({
+      ...item,
+      severity: item.severity as 'low' | 'medium' | 'high' | 'critical',
+      status: item.status as 'detected' | 'investigating' | 'neutralized' | 'predicted'
+    }));
   } catch (error) {
     console.error('Database error:', error);
     return [];
@@ -391,7 +396,11 @@ export async function fetchCountermeasures(): Promise<Countermeasure[]> {
       return [];
     }
     
-    return data || [];
+    // Type assertion to ensure proper typing
+    return (data || []).map(item => ({
+      ...item,
+      status: item.status as 'pending' | 'deployed' | 'successful' | 'failed'
+    }));
   } catch (error) {
     console.error('Database error:', error);
     return [];
