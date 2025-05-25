@@ -1,7 +1,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Shield, Cpu, Zap, Database, Brain, Network, Github, ExternalLink } from 'lucide-react';
+import { Shield, Cpu, Zap, Database, Brain, Network, Github } from 'lucide-react';
 
 const About = () => {
   const techStack = [
@@ -236,49 +236,38 @@ const About = () => {
         </Card>
       </div>
 
-      {/* Lovable Integration */}
+      {/* Enterprise Integration */}
       <Card className="bg-card/50 border-border/50 border-primary/30 safe-glow">
         <CardHeader>
           <CardTitle className="text-foreground text-2xl flex items-center">
             <Shield className="mr-3 h-6 w-6 text-primary" />
-            Powered by Lovable.ai
+            Enterprise Integration
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
             <p className="text-muted-foreground">
-              AEGIS is built using <span className="text-primary font-bold">Lovable.ai</span>, 
-              demonstrating the power of AI-assisted development for rapid prototyping and 
-              deployment of complex cybersecurity solutions.
+              AEGIS is designed for seamless integration with existing enterprise security infrastructure, 
+              providing advanced threat detection and autonomous response capabilities for modern organizations.
             </p>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="p-4 bg-primary/10 rounded-lg border border-primary/30">
-                <h4 className="font-semibold text-primary mb-2">Rapid Development</h4>
+                <h4 className="font-semibold text-primary mb-2">Scalable Architecture</h4>
                 <p className="text-sm text-muted-foreground">
-                  AI-powered code generation and optimization for faster time-to-market
+                  Cloud-native design with horizontal scaling for enterprise workloads
                 </p>
               </div>
               
               <div className="p-4 bg-primary/10 rounded-lg border border-primary/30">
-                <h4 className="font-semibold text-primary mb-2">Intelligent Architecture</h4>
+                <h4 className="font-semibold text-primary mb-2">API Integration</h4>
                 <p className="text-sm text-muted-foreground">
-                  Automated best practices and scalable design patterns implementation
+                  RESTful APIs for seamless integration with existing security tools
                 </p>
               </div>
             </div>
 
             <div className="flex items-center space-x-4 pt-4 border-t border-border/30">
-              <a 
-                href="https://lovable.ai" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="flex items-center space-x-2 text-primary hover:text-primary/80 transition-colors"
-              >
-                <ExternalLink className="h-4 w-4" />
-                <span>Visit Lovable.ai</span>
-              </a>
-              
               <a 
                 href="https://github.com" 
                 target="_blank" 
@@ -296,7 +285,7 @@ const About = () => {
       {/* Footer */}
       <div className="text-center py-8 border-t border-border/30">
         <p className="text-muted-foreground">
-          © 2024 AEGIS Cyber Defense System. Advanced AI Integration powered by Lovable.ai
+          © 2024 AEGIS Cyber Defense System. Advanced AI-Powered Security Platform.
         </p>
       </div>
     </div>

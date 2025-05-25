@@ -133,10 +133,10 @@ const Index = () => {
             <div className="flex items-center space-x-2">
               <Shield className="h-6 w-6 text-primary" />
               <span className="text-primary font-bold">AEGIS</span>
-              <span className="text-muted-foreground">- Powered by Lovable.ai</span>
+              <span className="text-muted-foreground">- Advanced AI Security Platform</span>
             </div>
             <div className="text-sm text-muted-foreground">
-              © 2024 AEGIS Cyber Defense. Advanced AI Integration.
+              © 2024 AEGIS Cyber Defense. Enterprise Security Solutions.
             </div>
           </div>
         </div>
