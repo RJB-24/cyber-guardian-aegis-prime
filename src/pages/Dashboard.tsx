@@ -6,6 +6,10 @@ import { Button } from '@/components/ui/button';
 import { Shield, Activity, Zap, Bell, Clock, Search, Crown, Swords, Brain, Cpu } from 'lucide-react';
 import { fetchThreatAnalysis, fetchCountermeasures } from '@/utils/threatDetection';
 import { useRealTimeThreats } from '@/hooks/useRealTimeThreats';
+import { SystemHealthIndicator } from '@/components/SystemHealthIndicator';
+import { AIModelStatus } from '@/components/AIModelStatus';
+import { ThreatFeed } from '@/components/ThreatFeed';
+import { CountermeasureDisplay } from '@/components/CountermeasureDisplay';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer, PieChart, Pie, Cell, BarChart, Bar } from 'recharts';
 
 const Dashboard = () => {
@@ -55,31 +59,21 @@ const Dashboard = () => {
     { name: 'Ensemble', accuracy: aiMetrics.ensembleConfidence, color: '#DC2626' }
   ];
 
-  const severityData = [
-    { name: 'Low', value: threats.filter(t => t.severity === 'low').length, color: '#22C55E' },
-    { name: 'Medium', value: threats.filter(t => t.severity === 'medium').length, color: '#F59E0B' },
-    { name: 'High', value: threats.filter(t => t.severity === 'high').length, color: '#EF4444' },
-    { name: 'Critical', value: threats.filter(t => t.severity === 'critical').length, color: '#DC2626' }
-  ];
+  // Transform threats data for ThreatFeed component
+  const threatFeedData = threats.map(threat => ({
+    id: threat.id,
+    timestamp: threat.created_at,
+    type: threat.threat_type,
+    severity: threat.severity,
+    confidence: threat.confidence,
+    description: threat.description || `AI-detected ${threat.threat_type} threat`,
+    status: threat.status,
+    aiModel: threat.random_forest_prediction || 'Ensemble Model'
+  }));
 
-  const getSeverityColor = (severity: string) => {
-    switch (severity) {
-      case 'low': return 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30';
-      case 'medium': return 'bg-amber-500/20 text-amber-400 border-amber-500/30';
-      case 'high': return 'bg-red-500/20 text-red-400 border-red-500/30';
-      case 'critical': return 'bg-red-600/20 text-red-300 border-red-600/30 threat-glow';
-      default: return 'bg-gray-500/20 text-gray-400 border-gray-500/30';
-    }
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'neutralized': return 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30';
-      case 'investigating': return 'bg-amber-500/20 text-amber-400 border-amber-500/30';
-      case 'detected': return 'bg-red-500/20 text-red-400 border-red-500/30';
-      case 'predicted': return 'bg-primary/20 text-primary border-primary/30 safe-glow';
-      default: return 'bg-gray-500/20 text-gray-400 border-gray-500/30';
-    }
+  const handleDeployAllCountermeasures = () => {
+    console.log('Deploying all pending countermeasures...');
+    // Implementation would update countermeasure statuses
   };
 
   return (
@@ -113,87 +107,52 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* AI Model Performance Section */}
-      <Card className="glass-effect border-primary/20 royal-gradient">
-        <CardHeader>
-          <CardTitle className="text-foreground flex items-center">
-            <Brain className="mr-2 h-5 w-5 text-primary" />
-            AI Model Performance Dashboard
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-            <div className="text-center p-4 bg-primary/10 rounded-lg border border-primary/30">
-              <div className="text-2xl font-bold text-primary">{aiMetrics.isolationForestAccuracy.toFixed(1)}%</div>
-              <div className="text-sm text-muted-foreground">Isolation Forest</div>
-              <div className="text-xs text-muted-foreground">Anomaly Detection</div>
-            </div>
-            <div className="text-center p-4 bg-purple-500/10 rounded-lg border border-purple-500/30">
-              <div className="text-2xl font-bold text-purple-400">{aiMetrics.lstmAccuracy.toFixed(1)}%</div>
-              <div className="text-sm text-muted-foreground">LSTM Network</div>
-              <div className="text-xs text-muted-foreground">Temporal Analysis</div>
-            </div>
-            <div className="text-center p-4 bg-amber-500/10 rounded-lg border border-amber-500/30">
-              <div className="text-2xl font-bold text-amber-400">{aiMetrics.randomForestAccuracy.toFixed(1)}%</div>
-              <div className="text-sm text-muted-foreground">Random Forest</div>
-              <div className="text-xs text-muted-foreground">Classification</div>
-            </div>
-            <div className="text-center p-4 bg-red-500/10 rounded-lg border border-red-500/30">
-              <div className="text-2xl font-bold text-red-400">{aiMetrics.ensembleConfidence.toFixed(1)}%</div>
-              <div className="text-sm text-muted-foreground">Ensemble Model</div>
-              <div className="text-xs text-muted-foreground">Combined Confidence</div>
-            </div>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="text-center p-3 bg-muted/10 rounded-lg">
-              <div className="text-lg font-bold text-primary">{aiMetrics.predictedThreats}</div>
-              <div className="text-sm text-muted-foreground">Threats Predicted</div>
-            </div>
-            <div className="text-center p-3 bg-muted/10 rounded-lg">
-              <div className="text-lg font-bold text-emerald-400">{aiMetrics.preventedAttacks}</div>
-              <div className="text-sm text-muted-foreground">Attacks Prevented</div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      {/* System Status Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <SystemHealthIndicator health={systemHealth} isActive={isActive} />
+        <AIModelStatus metrics={aiMetrics} isActive={isActive} />
+      </div>
 
       {/* Attack Simulation Controls */}
       <Card className="glass-effect border-primary/20 royal-gradient">
         <CardHeader>
           <CardTitle className="text-foreground flex items-center">
             <Swords className="mr-2 h-5 w-5 text-primary" />
-            AI-Powered Attack Simulation
+            AI-Powered Attack Simulation & Testing
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="flex gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <Button
               variant="outline"
               onClick={() => simulateAttackScenario('ddos')}
-              className="hover:border-red-500/50 hover:text-red-400"
+              className="hover:border-red-500/50 hover:text-red-400 transition-all"
             >
+              <Shield className="mr-2 h-4 w-4" />
               AI DDoS Detection
             </Button>
             <Button
               variant="outline"
               onClick={() => simulateAttackScenario('portscan')}
-              className="hover:border-amber-500/50 hover:text-amber-400"
+              className="hover:border-amber-500/50 hover:text-amber-400 transition-all"
             >
+              <Search className="mr-2 h-4 w-4" />
               ML Port Scan Analysis
             </Button>
             <Button
               variant="outline"
               onClick={() => simulateAttackScenario('malware')}
-              className="hover:border-red-500/50 hover:text-red-400"
+              className="hover:border-red-500/50 hover:text-red-400 transition-all"
             >
+              <Zap className="mr-2 h-4 w-4" />
               Deep Learning Malware
             </Button>
             <Button
               variant="outline"
               onClick={() => simulateAttackScenario('apt')}
-              className="hover:border-purple-500/50 hover:text-purple-400"
+              className="hover:border-purple-500/50 hover:text-purple-400 transition-all"
             >
+              <Brain className="mr-2 h-4 w-4" />
               Ensemble APT Detection
             </Button>
           </div>
@@ -227,7 +186,7 @@ const Dashboard = () => {
         <Card className="glass-effect border-primary/20 hover:border-primary/40 transition-all duration-300 royal-gradient">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
             <CardTitle className="text-sm font-medium text-muted-foreground">Ensemble Accuracy</CardTitle>
-            <Search className="h-5 w-5 text-primary" />
+            <Activity className="h-5 w-5 text-primary" />
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold text-primary">{predictionAccuracy.toFixed(1)}%</div>
@@ -290,104 +249,16 @@ const Dashboard = () => {
         </Card>
       </div>
 
-      {/* Recent Activity */}
+      {/* Live Feeds */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="glass-effect border-primary/20">
-          <CardHeader>
-            <CardTitle className="text-foreground">AI Threat Predictions & Analysis</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4 max-h-96 overflow-y-auto">
-              {threats.slice(0, 5).map((threat) => (
-                <div key={threat.id} className="flex items-center justify-between p-4 bg-muted/10 rounded-xl border border-border/30 hover:border-primary/30 transition-all">
-                  <div className="flex-1">
-                    <div className="flex items-center space-x-2 mb-2">
-                      <Badge className={getSeverityColor(threat.severity)}>
-                        {threat.severity.toUpperCase()}
-                      </Badge>
-                      <Badge className={getStatusColor(threat.status)}>
-                        {threat.status.toUpperCase()}
-                      </Badge>
-                      <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30">
-                        AI-POWERED
-                      </Badge>
-                    </div>
-                    <p className="text-sm text-foreground font-medium">{threat.threat_type}</p>
-                    <p className="text-xs text-muted-foreground">{threat.description}</p>
-                    <div className="flex items-center space-x-4 text-xs text-muted-foreground mt-1">
-                      <span>AI Confidence: {threat.confidence}%</span>
-                      {threat.isolation_forest_score && (
-                        <span>IF: {threat.isolation_forest_score.toFixed(2)}</span>
-                      )}
-                      {threat.lstm_score && (
-                        <span>LSTM: {threat.lstm_score.toFixed(2)}</span>
-                      )}
-                    </div>
-                  </div>
-                  <div className="text-xs text-muted-foreground">
-                    {new Date(threat.created_at).toLocaleTimeString()}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="glass-effect border-primary/20">
-          <CardHeader>
-            <CardTitle className="text-foreground">AI-Generated Countermeasures</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4 max-h-96 overflow-y-auto">
-              {countermeasures.slice(0, 5).map((measure) => (
-                <div key={measure.id} className="flex items-center justify-between p-4 bg-muted/10 rounded-xl border border-border/30 hover:border-primary/30 transition-all">
-                  <div className="flex-1">
-                    <div className="flex items-center space-x-2 mb-2">
-                      <Badge className={measure.status === 'successful' ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' : 
-                                      measure.status === 'deployed' ? 'bg-primary/20 text-primary border-primary/30' :
-                                      measure.status === 'failed' ? 'bg-red-500/20 text-red-400 border-red-500/30' :
-                                      'bg-amber-500/20 text-amber-400 border-amber-500/30'}>
-                        {measure.status.toUpperCase()}
-                      </Badge>
-                      <Badge className="bg-purple-500/20 text-purple-400 border-purple-500/30">
-                        ML-GENERATED
-                      </Badge>
-                    </div>
-                    <p className="text-sm text-foreground font-medium">{measure.action}</p>
-                    <p className="text-xs text-muted-foreground">{measure.description}</p>
-                    <p className="text-xs text-muted-foreground mt-1">Impact: {measure.impact}</p>
-                  </div>
-                  <div className="text-xs text-muted-foreground">
-                    {new Date(measure.created_at).toLocaleTimeString()}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+        <ThreatFeed threats={threatFeedData} isRealTime={isActive} />
+        <CountermeasureDisplay 
+          countermeasures={countermeasures} 
+          onDeployAll={handleDeployAllCountermeasures}
+        />
       </div>
     </div>
   );
-};
-
-const getSeverityColor = (severity: string) => {
-  switch (severity) {
-    case 'low': return 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30';
-    case 'medium': return 'bg-amber-500/20 text-amber-400 border-amber-500/30';
-    case 'high': return 'bg-red-500/20 text-red-400 border-red-500/30';
-    case 'critical': return 'bg-red-600/20 text-red-300 border-red-600/30 threat-glow';
-    default: return 'bg-gray-500/20 text-gray-400 border-gray-500/30';
-  }
-};
-
-const getStatusColor = (status: string) => {
-  switch (status) {
-    case 'neutralized': return 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30';
-    case 'investigating': return 'bg-amber-500/20 text-amber-400 border-amber-500/30';
-    case 'detected': return 'bg-red-500/20 text-red-400 border-red-500/30';
-    case 'predicted': return 'bg-primary/20 text-primary border-primary/30 safe-glow';
-    default: return 'bg-gray-500/20 text-gray-400 border-gray-500/30';
-  }
 };
 
 export default Dashboard;
