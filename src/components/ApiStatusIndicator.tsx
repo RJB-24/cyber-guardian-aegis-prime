@@ -30,7 +30,7 @@ export const ApiStatusIndicator = () => {
         <CardTitle className="text-foreground flex items-center justify-between">
           <span className="flex items-center">
             {getStatusIcon()}
-            <span className="ml-2">API Integration Status</span>
+            <span className="ml-2">Real-time API Integration Status</span>
           </span>
           <Button
             variant="outline"
@@ -45,9 +45,9 @@ export const ApiStatusIndicator = () => {
       <CardContent>
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <span className="text-sm text-muted-foreground">Real-time APIs:</span>
+            <span className="text-sm text-muted-foreground">Threat Intelligence APIs:</span>
             <Badge className={getStatusColor()}>
-              {apiStatus.isConfigured ? 'CONFIGURED' : 'NOT CONFIGURED'}
+              {apiStatus.isConfigured ? 'FULLY CONFIGURED' : 'SETUP REQUIRED'}
             </Badge>
           </div>
 
@@ -55,7 +55,7 @@ export const ApiStatusIndicator = () => {
             <Alert>
               <AlertTriangle className="h-4 w-4" />
               <AlertDescription>
-                {apiStatus.missingKeys.length} API key(s) missing. Configure them in your environment variables to enable real-time threat intelligence.
+                {apiStatus.missingKeys.length} API key(s) missing. Configure them in your .env.local file to enable real-time threat intelligence.
               </AlertDescription>
             </Alert>
           )}
@@ -70,7 +70,7 @@ export const ApiStatusIndicator = () => {
                   { name: 'AbuseIPDB', env: 'VITE_ABUSEIPDB_API_KEY', status: !apiStatus.missingKeys.includes('ABUSEIPDB') },
                   { name: 'IPInfo', env: 'VITE_IPINFO_API_KEY', status: !apiStatus.missingKeys.includes('IPINFO') },
                   { name: 'OpenAI', env: 'VITE_OPENAI_API_KEY', status: !apiStatus.missingKeys.includes('OPENAI') },
-                  { name: 'NVD', env: 'VITE_NVD_API_KEY', status: !apiStatus.missingKeys.includes('NVD') }
+                  { name: 'NVD (CVE Database)', env: 'VITE_NVD_API_KEY', status: !apiStatus.missingKeys.includes('NVD') }
                 ].map((api) => (
                   <div key={api.name} className="flex items-center justify-between p-2 bg-muted/10 rounded">
                     <div className="flex items-center">
@@ -78,10 +78,20 @@ export const ApiStatusIndicator = () => {
                       <span className="text-xs">{api.name}</span>
                     </div>
                     <Badge variant={api.status ? 'default' : 'destructive'} className="text-xs">
-                      {api.status ? 'OK' : 'MISSING'}
+                      {api.status ? 'CONFIGURED' : 'MISSING'}
                     </Badge>
                   </div>
                 ))}
+              </div>
+
+              <div className="p-3 bg-muted/5 rounded border">
+                <div className="text-xs font-medium text-foreground mb-2">Setup Instructions:</div>
+                <div className="text-xs text-muted-foreground space-y-1">
+                  <div>1. Create a .env.local file in your project root</div>
+                  <div>2. Add your API keys using the environment variable names shown above</div>
+                  <div>3. Restart your development server</div>
+                  <div>4. Click "Refresh Status" to verify configuration</div>
+                </div>
               </div>
 
               <Button

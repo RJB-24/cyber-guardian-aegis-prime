@@ -24,12 +24,6 @@ export const API_CONFIG = {
     baseUrl: 'https://ipinfo.io',
     key: import.meta.env.VITE_IPINFO_API_KEY || 'YOUR_IPINFO_API_KEY',
   },
-  // Cloud Provider APIs (example)
-  AWS_CLOUDWATCH: {
-    region: import.meta.env.VITE_AWS_REGION || 'us-east-1',
-    accessKey: import.meta.env.VITE_AWS_ACCESS_KEY || 'YOUR_AWS_ACCESS_KEY',
-    secretKey: import.meta.env.VITE_AWS_SECRET_KEY || 'YOUR_AWS_SECRET_KEY',
-  },
   // OpenAI for AI-powered analysis
   OPENAI: {
     baseUrl: 'https://api.openai.com/v1',
