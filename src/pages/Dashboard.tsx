@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -11,6 +10,9 @@ import { AIModelStatus } from '@/components/AIModelStatus';
 import { ThreatFeed } from '@/components/ThreatFeed';
 import { CountermeasureDisplay } from '@/components/CountermeasureDisplay';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer, PieChart, Pie, Cell, BarChart, Bar } from 'recharts';
+import { ApiStatusIndicator } from '@/components/ApiStatusIndicator';
+import { LiveThreatIntelligence } from '@/components/LiveThreatIntelligence';
+import { useRealTimeAPIs } from '@/hooks/useRealTimeAPIs';
 
 const Dashboard = () => {
   const [threats, setThreats] = useState<any[]>([]);
@@ -25,6 +27,8 @@ const Dashboard = () => {
     stopMonitoring,
     simulateAttackScenario 
   } = useRealTimeThreats();
+  
+  const { apiStatus, analyzeWithRealAPIs } = useRealTimeAPIs();
 
   useEffect(() => {
     const loadData = async () => {
@@ -76,6 +80,26 @@ const Dashboard = () => {
     // Implementation would update countermeasure statuses
   };
 
+  const handleRealTimeAnalysis = async () => {
+    if (!apiStatus.isConfigured) {
+      console.warn('Real-time APIs not configured, using simulation mode');
+      return;
+    }
+
+    // Example real-time log entry
+    const sampleLog = {
+      timestamp: new Date().toISOString(),
+      source_ip: `192.168.1.${Math.floor(Math.random() * 255)}`,
+      destination_ip: `10.0.0.${Math.floor(Math.random() * 255)}`,
+      protocol: 'TCP',
+      port: 80,
+      payload_size: Math.floor(Math.random() * 5000)
+    };
+
+    const result = await analyzeWithRealAPIs(sampleLog);
+    console.log('Real-time analysis result:', result);
+  };
+
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -86,7 +110,7 @@ const Dashboard = () => {
             AI Command Center
           </h1>
           <p className="text-muted-foreground mt-2 text-lg">
-            Real-time AI-powered threat analysis with ensemble machine learning models
+            Real-time AI-powered threat analysis with live API integrations
           </p>
         </div>
         <div className="flex items-center space-x-4">
@@ -104,8 +128,18 @@ const Dashboard = () => {
           >
             {isActive ? 'Stop AI Analysis' : 'Start AI Analysis'}
           </Button>
+          <Button
+            onClick={handleRealTimeAnalysis}
+            variant="outline"
+            disabled={!apiStatus.isConfigured}
+          >
+            Test Real-time APIs
+          </Button>
         </div>
       </div>
+
+      {/* API Status */}
+      <ApiStatusIndicator />
 
       {/* System Status Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -113,12 +147,23 @@ const Dashboard = () => {
         <AIModelStatus metrics={aiMetrics} isActive={isActive} />
       </div>
 
+      {/* Live Threat Intelligence */}
+      <LiveThreatIntelligence />
+
       {/* Attack Simulation Controls */}
       <Card className="glass-effect border-primary/20 royal-gradient">
         <CardHeader>
-          <CardTitle className="text-foreground flex items-center">
-            <Swords className="mr-2 h-5 w-5 text-primary" />
-            AI-Powered Attack Simulation & Testing
+          <CardTitle className="text-foreground flex items-center justify-between">
+            <span className="flex items-center">
+              <Swords className="mr-2 h-5 w-5 text-primary" />
+              AI-Powered Attack Simulation & Testing
+            </span>
+            <Badge className={apiStatus.isConfigured ? 
+              'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' :
+              'bg-amber-500/20 text-amber-400 border-amber-500/30'
+            }>
+              {apiStatus.isConfigured ? 'REAL-TIME APIS' : 'SIMULATION MODE'}
+            </Badge>
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -163,12 +208,19 @@ const Dashboard = () => {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <Card className="glass-effect border-primary/20 hover:border-primary/40 transition-all duration-300 royal-gradient">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-            <CardTitle className="text-sm font-medium text-muted-foreground">AI-Detected Threats</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">
+              {apiStatus.isConfigured ? 'Real-time Threats' : 'AI-Detected Threats'}
+            </CardTitle>
             <Brain className="h-5 w-5 text-destructive" />
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold text-destructive">{criticalThreats + threatCount}</div>
-            <p className="text-xs text-muted-foreground mt-1">ML ensemble analysis with {predictionAccuracy.toFixed(1)}% confidence</p>
+            <p className="text-xs text-muted-foreground mt-1">
+              {apiStatus.isConfigured ? 
+                `Live API analysis with ${predictionAccuracy.toFixed(1)}% confidence` :
+                `ML ensemble analysis with ${predictionAccuracy.toFixed(1)}% confidence`
+              }
+            </p>
           </CardContent>
         </Card>
 
