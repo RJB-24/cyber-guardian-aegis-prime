@@ -1,10 +1,10 @@
-
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer, AreaChart, Area, ScatterChart, Scatter } from 'recharts';
 import { TrendingUp, Download, Calendar, Filter, BarChart3, PieChart } from 'lucide-react';
+import { toast } from '@/hooks/use-toast';
 
 const Analytics = () => {
   const [timeRange, setTimeRange] = useState('7d');
@@ -41,9 +41,184 @@ const Analytics = () => {
     predictions: Math.floor(Math.random() * 200) + 100
   }));
 
+  const exportToCsv = (data: any[], filename: string) => {
+    try {
+      let csvContent = '';
+      
+      if (reportType === 'overview') {
+        // Export comprehensive overview data
+        csvContent = 'Report Type,Metric,Value,Period\n';
+        csvContent += `Overview,Total Threats Detected,1247,${timeRange}\n`;
+        csvContent += `Overview,Prevention Rate,99.4%,${timeRange}\n`;
+        csvContent += `Overview,False Positive Rate,0.6%,${timeRange}\n`;
+        csvContent += `Overview,Average Response Time,6.8ms,${timeRange}\n`;
+        
+        // Add threat distribution
+        csvContent += '\nThreat Distribution\n';
+        csvContent += 'Category,Count,Percentage\n';
+        threatDistribution.forEach(item => {
+          csvContent += `${item.category},${item.count},${item.percentage}%\n`;
+        });
+        
+        // Add threat trends
+        csvContent += '\nThreat Trends\n';
+        csvContent += 'Date,Threats Detected,Threats Prevented,Threats Neutralized\n';
+        threatTrends.slice(-14).forEach(item => {
+          csvContent += `${item.date},${item.threats},${item.prevented},${item.neutralized}\n`;
+        });
+        
+      } else if (reportType === 'threats') {
+        csvContent = 'Date,Threats Detected,Threats Prevented,Threats Neutralized\n';
+        threatTrends.forEach(item => {
+          csvContent += `${item.date},${item.threats},${item.prevented},${item.neutralized}\n`;
+        });
+      } else if (reportType === 'performance') {
+        csvContent = 'Hour,Response Time (ms),Accuracy (%),Throughput\n';
+        performanceMetrics.forEach(item => {
+          csvContent += `${item.hour},${item.responseTime},${item.accuracy},${item.throughput}\n`;
+        });
+      }
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute('download', filename);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      toast({
+        title: "Export Successful",
+        description: `${filename} has been downloaded successfully.`,
+      });
+    } catch (error) {
+      toast({
+        title: "Export Failed",
+        description: "Failed to export CSV file. Please try again.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const exportToPdf = (format: string) => {
+    try {
+      // Create HTML content for PDF
+      const htmlContent = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>AEGIS Analytics Report</title>
+          <style>
+            body { font-family: Arial, sans-serif; margin: 20px; }
+            .header { text-align: center; margin-bottom: 30px; }
+            .metric { margin: 10px 0; padding: 10px; background: #f5f5f5; border-radius: 5px; }
+            .chart-section { margin: 20px 0; }
+            table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+            th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+            th { background-color: #f2f2f2; }
+            .summary { background: #e8f4fd; padding: 15px; margin: 20px 0; border-radius: 5px; }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <h1>AEGIS Cybersecurity Analytics Report</h1>
+            <p>Report Type: ${reportType.charAt(0).toUpperCase() + reportType.slice(1)} | Period: ${timeRange}</p>
+            <p>Generated: ${new Date().toLocaleString()}</p>
+          </div>
+          
+          <div class="summary">
+            <h2>Key Performance Indicators</h2>
+            <div class="metric"><strong>Total Threats Detected:</strong> 1,247 (↑ 12% improvement)</div>
+            <div class="metric"><strong>Prevention Rate:</strong> 99.4% (↑ 0.3% improvement)</div>
+            <div class="metric"><strong>False Positive Rate:</strong> 0.6% (↓ 40% reduction)</div>
+            <div class="metric"><strong>Average Response Time:</strong> 6.8ms (↓ 15% faster)</div>
+          </div>
+
+          <div class="chart-section">
+            <h2>Threat Category Distribution</h2>
+            <table>
+              <tr><th>Category</th><th>Count</th><th>Percentage</th></tr>
+              ${threatDistribution.map(item => `<tr><td>${item.category}</td><td>${item.count}</td><td>${item.percentage}%</td></tr>`).join('')}
+            </table>
+          </div>
+
+          <div class="chart-section">
+            <h2>Recent Threat Trends (Last 14 Days)</h2>
+            <table>
+              <tr><th>Date</th><th>Threats Detected</th><th>Prevented</th><th>Neutralized</th></tr>
+              ${threatTrends.slice(-14).map(item => `<tr><td>${item.date}</td><td>${item.threats}</td><td>${item.prevented}</td><td>${item.neutralized}</td></tr>`).join('')}
+            </table>
+          </div>
+
+          <div class="summary">
+            <h2>Executive Summary</h2>
+            <h3>Threat Landscape</h3>
+            <ul>
+              <li>247% increase in advanced persistent threats</li>
+              <li>Zero-day exploits detected 4.2 hours before execution</li>
+              <li>99.4% successful threat neutralization rate</li>
+              <li>40% reduction in false positives this quarter</li>
+            </ul>
+            
+            <h3>System Performance</h3>
+            <ul>
+              <li>Average response time: 6.8ms (15% improvement)</li>
+              <li>99.8% system uptime maintained</li>
+              <li>Processing 2.3M events per second</li>
+              <li>96.8% prediction accuracy achieved</li>
+            </ul>
+            
+            <h3>Key Achievements</h3>
+            <ul>
+              <li>Prevented $2.4M in potential damages</li>
+              <li>Deployed 1,247 autonomous countermeasures</li>
+              <li>Detected 15 novel attack vectors</li>
+              <li>Enhanced ML models with 99.2% accuracy</li>
+            </ul>
+          </div>
+        </body>
+        </html>
+      `;
+
+      // Create and download PDF using print functionality
+      const printWindow = window.open('', '_blank');
+      if (printWindow) {
+        printWindow.document.write(htmlContent);
+        printWindow.document.close();
+        
+        // Wait for content to load then trigger print
+        setTimeout(() => {
+          printWindow.print();
+          printWindow.close();
+        }, 500);
+        
+        toast({
+          title: "PDF Export Initiated",
+          description: "PDF report is being generated. Use your browser's print dialog to save as PDF.",
+        });
+      } else {
+        throw new Error("Failed to open print window");
+      }
+    } catch (error) {
+      toast({
+        title: "PDF Export Failed",
+        description: "Failed to generate PDF report. Please ensure pop-ups are allowed and try again.",
+        variant: "destructive"
+      });
+    }
+  };
+
   const exportReport = (format: string) => {
-    console.log(`Exporting ${reportType} report in ${format} format for ${timeRange} period`);
-    // Simulate export functionality
+    const timestamp = new Date().toISOString().split('T')[0];
+    const filename = `aegis-${reportType}-report-${timeRange}-${timestamp}`;
+    
+    if (format === 'csv') {
+      exportToCsv([], `${filename}.csv`);
+    } else if (format === 'pdf') {
+      exportToPdf(format);
+    }
   };
 
   return (
