@@ -86,33 +86,82 @@ This guide provides step-by-step instructions to obtain API keys for all integra
 
 ## Optional API Integrations (Advanced)
 
-### 7. AWS CloudWatch (Enterprise)
-**Purpose**: Cloud infrastructure monitoring, log analysis
+### 7. GreyNoise API (Internet Background Noise)
+**Purpose**: Internet background noise analysis, benign scanner identification
 
 **How to Get:**
-1. Create AWS account: https://aws.amazon.com/
-2. Create IAM user with CloudWatch permissions
-3. Generate access keys
+1. Visit: https://www.greynoise.io/signup
+2. Create a free account
+3. Go to Account → API Key
+4. Copy the API key
 
-**Environment Variables**: 
-- `VITE_AWS_ACCESS_KEY`
-- `VITE_AWS_SECRET_KEY`
-- `VITE_AWS_REGION`
+**Environment Variable**: `VITE_GREYNOISE_API_KEY`
+**Free Tier**: 10,000 requests per month
+**Cost**: Free for community use
 
-### 8. Microsoft Defender API (Enterprise)
-**Purpose**: Endpoint detection and response
-
-**How to Get:**
-1. Azure Active Directory admin access required
-2. Register application in Azure AD
-3. Configure API permissions
-
-### 9. CrowdStrike Falcon API (Enterprise)
-**Purpose**: Advanced endpoint protection
+### 8. URLVoid API (URL Reputation)
+**Purpose**: URL reputation checking, malicious website detection
 
 **How to Get:**
-1. CrowdStrike Falcon subscription required
-2. Contact CrowdStrike for API access
+1. Visit: https://www.urlvoid.com/api/
+2. Sign up for free account
+3. Get your API key from dashboard
+
+**Environment Variable**: `VITE_URLVOID_API_KEY`
+**Free Tier**: 1,000 requests per month
+**Cost**: Free
+
+### 9. AlienVault OTX API (Open Threat Exchange)
+**Purpose**: Community threat intelligence, IOCs, malware samples
+
+**How to Get:**
+1. Visit: https://otx.alienvault.com/
+2. Create free account
+3. Go to Settings → API Integration
+4. Copy your OTX Key
+
+**Environment Variable**: `VITE_OTX_API_KEY`
+**Free Tier**: Unlimited for community members
+**Cost**: Free
+
+### 10. ThreatCrowd API (Threat Intelligence Search)
+**Purpose**: Open source threat intelligence search engine
+
+**How to Get:**
+1. Visit: https://www.threatcrowd.org/
+2. No registration required
+3. API is completely free and open
+
+**Environment Variable**: Not required (open API)
+**Free Tier**: No limits
+**Cost**: Free
+
+## AEGIS New Features & Requirements
+
+### Real-time 3D Network Visualization
+- **No additional APIs required**
+- Uses built-in network topology algorithms
+- Real-time canvas-based rendering
+
+### AI Threat Hunting Dashboard  
+- **Enhanced by**: OpenAI API (for advanced analysis)
+- **Alternative**: Works with built-in ML models without API
+
+### Automated Incident Response
+- **Enhanced by**: All threat intelligence APIs
+- **Core functionality**: Works independently with simulated data
+
+### Predictive Attack Timeline
+- **Enhanced by**: OpenAI API + CVE/NVD data
+- **Core functionality**: Uses built-in predictive algorithms
+
+### Interactive Threat Intelligence Map
+- **Enhanced by**: IPInfo API (geolocation) + all threat Intel APIs
+- **Core functionality**: Works with simulated global threat data
+
+### AI Security Chatbot
+- **Enhanced by**: OpenAI API (for natural language processing)
+- **Alternative**: Works with pre-programmed responses
 
 ## Configuration Steps
 
@@ -120,7 +169,7 @@ This guide provides step-by-step instructions to obtain API keys for all integra
 Create a `.env.local` file in your project root:
 
 ```env
-# Threat Intelligence APIs
+# Core Threat Intelligence APIs
 VITE_VIRUSTOTAL_API_KEY=your_virustotal_api_key_here
 VITE_SHODAN_API_KEY=your_shodan_api_key_here
 VITE_ABUSEIPDB_API_KEY=your_abuseipdb_api_key_here
@@ -128,7 +177,12 @@ VITE_IPINFO_API_KEY=your_ipinfo_api_key_here
 VITE_NVD_API_KEY=your_nvd_api_key_here
 VITE_OPENAI_API_KEY=your_openai_api_key_here
 
-# Optional Cloud APIs
+# Optional Enhanced APIs
+VITE_GREYNOISE_API_KEY=your_greynoise_api_key_here
+VITE_URLVOID_API_KEY=your_urlvoid_api_key_here
+VITE_OTX_API_KEY=your_otx_api_key_here
+
+# Cloud APIs (Enterprise)
 VITE_AWS_ACCESS_KEY=your_aws_access_key_here
 VITE_AWS_SECRET_KEY=your_aws_secret_key_here
 VITE_AWS_REGION=us-east-1
@@ -144,7 +198,39 @@ npm run dev
 1. Open AEGIS dashboard
 2. Check the "API Integration Status" card
 3. All APIs should show "OK" status
-4. Click "Test Real-time APIs" to verify functionality
+4. Test real-time features
+
+## Hackathon-Winning Features Guide
+
+### 1. 3D Network Topology Visualization
+- **Demo impact**: Visual wow factor, real-time network security
+- **Key talking points**: "Live 3D network visualization with AI threat detection"
+- **No API dependencies**: Works out of the box
+
+### 2. AI Threat Hunting Operations
+- **Demo impact**: Shows sophisticated AI/ML capabilities
+- **Key talking points**: "Autonomous threat hunting with ensemble AI models"
+- **Enhanced with**: OpenAI API for advanced analysis
+
+### 3. Automated Incident Response
+- **Demo impact**: Demonstrates full automation and AI decision making
+- **Key talking points**: "Zero-human-intervention incident response"
+- **Enhanced with**: All threat intelligence APIs
+
+### 4. Predictive Attack Timeline
+- **Demo impact**: Shows future prediction capabilities
+- **Key talking points**: "AI predicts attacks before they happen"
+- **Enhanced with**: OpenAI + NVD APIs
+
+### 5. Global Threat Intelligence Map
+- **Demo impact**: Geographic visualization of global threats
+- **Key talking points**: "Real-time global threat intelligence visualization"
+- **Enhanced with**: IPInfo + all threat APIs
+
+### 6. AI Security Chatbot
+- **Demo impact**: Natural language interaction with security AI
+- **Key talking points**: "Talk to your security system in plain English"
+- **Enhanced with**: OpenAI API for natural responses
 
 ## API Rate Limits & Best Practices
 
@@ -155,24 +241,26 @@ npm run dev
 - **IPInfo**: 50,000 requests/month (free) - ~1,600 requests/day
 - **NVD**: 50 requests/30 seconds - Batch CVE queries
 - **OpenAI**: Pay-per-use - Optimize prompts, cache responses
+- **GreyNoise**: 10,000 requests/month (free) - Cache for 24 hours
+- **URLVoid**: 1,000 requests/month (free) - Cache for 6 hours
 
-### Caching Implementation
-```javascript
-// Example caching strategy
-const cache = new Map();
-const CACHE_DURATION = 3600000; // 1 hour
+### Demo-Ready Features (No API Required)
+All core AEGIS features work without APIs for demonstration:
+- 3D Network Visualization
+- AI Threat Hunting (with simulated data)
+- Incident Response System
+- Predictive Timeline
+- Threat Intelligence Map
+- Security Chatbot (with pre-programmed responses)
 
-async function cachedAPICall(key, apiFunction) {
-  const cached = cache.get(key);
-  if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
-    return cached.data;
-  }
-  
-  const data = await apiFunction();
-  cache.set(key, { data, timestamp: Date.now() });
-  return data;
-}
-```
+### API-Enhanced Features
+When APIs are configured, these features become even more powerful:
+- **Real threat intelligence** instead of simulated data
+- **Live CVE feeds** from NVD
+- **Actual IP reputation** checking
+- **Real geolocation** data for threats
+- **Advanced AI analysis** with OpenAI
+- **Community threat intelligence** from OTX
 
 ## Security Considerations
 
@@ -223,50 +311,6 @@ curl -H "Key: YOUR_ABUSEIPDB_KEY" \
 curl "https://ipinfo.io/8.8.8.8?token=YOUR_IPINFO_TOKEN"
 ```
 
-## Monitoring & Analytics
-
-### API Usage Tracking
-1. **Log all API calls with timestamps**
-2. **Track response times and error rates**
-3. **Monitor rate limit consumption**
-4. **Set up alerts for API failures**
-
-### Performance Metrics
-- Average response time per API
-- Success/failure rates
-- Cache hit ratios
-- Monthly API costs
-
-## Scaling Considerations
-
-### Production Deployment
-1. **Use paid API tiers for production**
-2. **Implement distributed caching (Redis)**
-3. **Set up API monitoring and alerting**
-4. **Consider API gateways for rate limiting**
-
-### Cost Optimization
-1. **Implement intelligent caching**
-2. **Batch API requests where possible**
-3. **Use free tiers efficiently**
-4. **Monitor and optimize query patterns**
-
-## Legal & Compliance
-
-### Terms of Service
-- Review each API provider's terms
-- Ensure compliance with usage policies
-- Understand data retention requirements
-- Implement proper attribution where required
-
-### Data Privacy
-- Minimize data collection
-- Implement data retention policies
-- Ensure GDPR compliance if applicable
-- Document data processing activities
-
----
-
 ## Quick Start Checklist
 
 - [ ] Sign up for VirusTotal account and get API key
@@ -275,9 +319,10 @@ curl "https://ipinfo.io/8.8.8.8?token=YOUR_IPINFO_TOKEN"
 - [ ] Sign up for IPInfo and get access token
 - [ ] Request NVD API key
 - [ ] Create OpenAI account and get API key
+- [ ] (Optional) Get GreyNoise, URLVoid, OTX API keys
 - [ ] Create `.env.local` file with all keys
 - [ ] Restart development server
 - [ ] Verify API status in AEGIS dashboard
-- [ ] Test real-time functionality
+- [ ] Test all hackathon-winning features
 
-With all APIs configured, AEGIS will provide real-time threat intelligence, automated analysis, and AI-powered countermeasure generation using live data from multiple security sources.
+With all APIs configured, AEGIS provides a complete, production-ready autonomous cybersecurity platform with real-time threat intelligence, AI-powered analysis, and automated incident response using live data from multiple security sources.

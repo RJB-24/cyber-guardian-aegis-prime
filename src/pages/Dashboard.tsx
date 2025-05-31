@@ -14,6 +14,12 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer, PieC
 import { ApiStatusIndicator } from '@/components/ApiStatusIndicator';
 import { LiveThreatIntelligence } from '@/components/LiveThreatIntelligence';
 import { EnhancedNotificationCenter } from '@/components/EnhancedNotificationCenter';
+import { NetworkTopology3D } from '@/components/NetworkTopology3D';
+import { ThreatHuntingDashboard } from '@/components/ThreatHuntingDashboard';
+import { IncidentResponseSystem } from '@/components/IncidentResponseSystem';
+import { PredictiveTimeline } from '@/components/PredictiveTimeline';
+import { ThreatIntelligenceMap } from '@/components/ThreatIntelligenceMap';
+import { SecurityChatbot } from '@/components/SecurityChatbot';
 import { useRealTimeAPIs } from '@/hooks/useRealTimeAPIs';
 import { useToast } from '@/hooks/use-toast';
 
