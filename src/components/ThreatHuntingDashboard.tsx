@@ -92,7 +92,7 @@ export const ThreatHuntingDashboard = () => {
       setActiveHunts(prev => prev.map(hunt => {
         if (hunt.status === 'hunting' || hunt.status === 'investigating') {
           const newTimeElapsed = hunt.timeElapsed + Math.floor(Math.random() * 5) + 1;
-          let newStatus = hunt.status;
+          let newStatus: 'hunting' | 'found' | 'investigating' | 'resolved' = hunt.status;
           let newConfidence = hunt.confidence;
           let newFindings = hunt.findings;
 
