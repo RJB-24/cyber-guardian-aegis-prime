@@ -4,251 +4,277 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Bell, BellRing, Check, X, AlertTriangle, Shield, Zap, Info } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
+import { Bell, AlertTriangle, Shield, Info, CheckCircle, X, Settings } from 'lucide-react';
 
 interface Notification {
   id: string;
-  type: 'threat' | 'success' | 'warning' | 'info';
+  type: 'threat' | 'countermeasure' | 'system' | 'info';
+  severity: 'low' | 'medium' | 'high' | 'critical';
   title: string;
   message: string;
   timestamp: string;
   read: boolean;
-  priority: 'low' | 'medium' | 'high' | 'critical';
-  actionable?: boolean;
+  actionRequired: boolean;
 }
 
 export const EnhancedNotificationCenter = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
-  const [isOpen, setIsOpen] = useState(false);
-  const { toast } = useToast();
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [filter, setFilter] = useState<'all' | 'unread' | 'threats' | 'system'>('all');
 
   useEffect(() => {
-    // Initialize with some notifications
+    // Initialize with sample notifications
     const initialNotifications: Notification[] = [
       {
         id: '1',
         type: 'threat',
+        severity: 'critical',
         title: 'Critical Threat Detected',
-        message: 'Advanced persistent threat identified targeting network infrastructure. Immediate action required.',
+        message: 'Advanced Persistent Threat detected targeting user credentials. Immediate action required.',
         timestamp: new Date().toISOString(),
         read: false,
-        priority: 'critical',
-        actionable: true
+        actionRequired: true
       },
       {
         id: '2',
-        type: 'success',
+        type: 'countermeasure',
+        severity: 'high',
         title: 'Countermeasure Deployed',
-        message: 'AI-generated firewall rules successfully deployed to block malicious traffic.',
-        timestamp: new Date(Date.now() - 120000).toISOString(),
+        message: 'Firewall rules updated to block suspicious IP range 192.168.100.0/24',
+        timestamp: new Date(Date.now() - 300000).toISOString(),
         read: false,
-        priority: 'medium'
+        actionRequired: false
       },
       {
         id: '3',
-        type: 'warning',
-        title: 'API Rate Limit Warning',
-        message: 'Approaching rate limit for threat intelligence APIs. Consider upgrading plan.',
-        timestamp: new Date(Date.now() - 300000).toISOString(),
+        type: 'system',
+        severity: 'medium',
+        title: 'AI Model Updated',
+        message: 'LSTM threat detection model retrained with 99.2% accuracy improvement',
+        timestamp: new Date(Date.now() - 600000).toISOString(),
         read: true,
-        priority: 'medium'
+        actionRequired: false
       }
     ];
+
     setNotifications(initialNotifications);
+    setUnreadCount(initialNotifications.filter(n => !n.read).length);
 
     // Simulate real-time notifications
     const interval = setInterval(() => {
-      const newNotification: Notification = {
-        id: Date.now().toString(),
-        type: ['threat', 'success', 'warning', 'info'][Math.floor(Math.random() * 4)] as any,
-        title: generateNotificationTitle(),
-        message: generateNotificationMessage(),
-        timestamp: new Date().toISOString(),
-        read: false,
-        priority: ['low', 'medium', 'high', 'critical'][Math.floor(Math.random() * 4)] as any,
-        actionable: Math.random() > 0.7
-      };
+      if (Math.random() < 0.4) { // 40% chance of new notification
+        const notificationTypes = ['threat', 'countermeasure', 'system', 'info'] as const;
+        const severities = ['low', 'medium', 'high', 'critical'] as const;
+        
+        const newNotification: Notification = {
+          id: Date.now().toString(),
+          type: notificationTypes[Math.floor(Math.random() * notificationTypes.length)],
+          severity: severities[Math.floor(Math.random() * severities.length)],
+          title: getRandomTitle(),
+          message: getRandomMessage(),
+          timestamp: new Date().toISOString(),
+          read: false,
+          actionRequired: Math.random() < 0.3
+        };
 
-      setNotifications(prev => [newNotification, ...prev.slice(0, 9)]);
-      
-      // Show toast for high priority notifications
-      if (newNotification.priority === 'critical' || newNotification.priority === 'high') {
-        toast({
-          title: newNotification.title,
-          description: newNotification.message,
-          variant: newNotification.type === 'threat' ? 'destructive' : 'default'
-        });
+        setNotifications(prev => [newNotification, ...prev.slice(0, 19)]);
+        setUnreadCount(prev => prev + 1);
       }
-    }, 15000 + Math.random() * 10000);
+    }, 12000);
 
     return () => clearInterval(interval);
-  }, [toast]);
+  }, []);
 
-  const generateNotificationTitle = () => {
+  const getRandomTitle = () => {
     const titles = [
-      'Malware Signature Updated',
-      'Network Anomaly Detected', 
-      'Threat Model Updated',
-      'Security Patch Available',
-      'Suspicious Activity Blocked',
-      'AI Model Retrained',
-      'Zero-Day Vulnerability Detected'
+      'New Threat Vector Identified',
+      'Security Policy Updated',
+      'Anomaly Detection Alert',
+      'System Health Check',
+      'Vulnerability Assessment Complete',
+      'Incident Response Activated',
+      'AI Model Performance Update'
     ];
     return titles[Math.floor(Math.random() * titles.length)];
   };
 
-  const generateNotificationMessage = () => {
+  const getRandomMessage = () => {
     const messages = [
-      'AI ensemble detected unusual network patterns requiring investigation.',
-      'Machine learning models identified potential security breach attempt.',
-      'Automated countermeasures successfully neutralized incoming threat.',
-      'Real-time threat intelligence updated with latest IOCs.',
-      'Behavioral analysis detected anomalous user activity patterns.',
-      'Predictive algorithms identified potential future attack vector.',
-      'System health metrics indicate optimal defensive posture.'
+      'Suspicious network activity detected from external source',
+      'Automated response successfully neutralized potential threat',
+      'Machine learning model confidence increased to 97.8%',
+      'Regular security scan completed with no issues found',
+      'New attack pattern added to threat intelligence database',
+      'Emergency protocols initiated for critical infrastructure protection',
+      'Predictive analysis identified potential zero-day exploit'
     ];
     return messages[Math.floor(Math.random() * messages.length)];
   };
 
-  const unreadCount = notifications.filter(n => !n.read).length;
-
-  const getNotificationIcon = (type: string) => {
+  const getTypeIcon = (type: string) => {
     switch (type) {
-      case 'threat': return AlertTriangle;
-      case 'success': return Shield;
-      case 'warning': return Zap;
-      default: return Info;
+      case 'threat': return <AlertTriangle className="h-4 w-4 text-red-400" />;
+      case 'countermeasure': return <Shield className="h-4 w-4 text-green-400" />;
+      case 'system': return <Settings className="h-4 w-4 text-blue-400" />;
+      case 'info': return <Info className="h-4 w-4 text-gray-400" />;
+      default: return <Bell className="h-4 w-4 text-gray-400" />;
     }
   };
 
-  const getNotificationColor = (type: string, priority: string) => {
-    if (priority === 'critical') return 'bg-red-600/20 text-red-300 border-red-600/30';
-    switch (type) {
-      case 'threat': return 'bg-red-500/20 text-red-400 border-red-500/30';
-      case 'success': return 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30';
-      case 'warning': return 'bg-amber-500/20 text-amber-400 border-amber-500/30';
-      default: return 'bg-blue-500/20 text-blue-400 border-blue-500/30';
+  const getSeverityColor = (severity: string) => {
+    switch (severity) {
+      case 'critical': return 'bg-red-500/20 text-red-400 border-red-500/30';
+      case 'high': return 'bg-orange-500/20 text-orange-400 border-orange-500/30';
+      case 'medium': return 'bg-amber-500/20 text-amber-400 border-amber-500/30';
+      case 'low': return 'bg-blue-500/20 text-blue-400 border-blue-500/30';
+      default: return 'bg-gray-500/20 text-gray-400 border-gray-500/30';
     }
   };
 
-  const markAsRead = (id: string) => {
-    setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
+  const markAsRead = (notificationId: string) => {
+    setNotifications(prev => prev.map(n => 
+      n.id === notificationId ? { ...n, read: true } : n
+    ));
+    setUnreadCount(prev => Math.max(0, prev - 1));
   };
 
   const markAllAsRead = () => {
     setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+    setUnreadCount(0);
   };
 
-  const dismissNotification = (id: string) => {
-    setNotifications(prev => prev.filter(n => n.id !== id));
+  const removeNotification = (notificationId: string) => {
+    const notification = notifications.find(n => n.id === notificationId);
+    setNotifications(prev => prev.filter(n => n.id !== notificationId));
+    if (notification && !notification.read) {
+      setUnreadCount(prev => Math.max(0, prev - 1));
+    }
   };
+
+  const filteredNotifications = notifications.filter(notification => {
+    switch (filter) {
+      case 'unread': return !notification.read;
+      case 'threats': return notification.type === 'threat';
+      case 'system': return notification.type === 'system';
+      default: return true;
+    }
+  });
 
   return (
-    <div className="relative">
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={() => setIsOpen(!isOpen)}
-        className="relative"
-      >
-        {unreadCount > 0 ? (
-          <BellRing className="h-4 w-4" />
-        ) : (
-          <Bell className="h-4 w-4" />
-        )}
-        {unreadCount > 0 && (
-          <Badge className="absolute -top-2 -right-2 h-5 w-5 rounded-full bg-red-500 text-xs p-0 flex items-center justify-center">
-            {unreadCount > 9 ? '9+' : unreadCount}
-          </Badge>
-        )}
-      </Button>
+    <Card className="glass-effect border-primary/20">
+      <CardHeader>
+        <CardTitle className="text-foreground flex items-center justify-between">
+          <span className="flex items-center">
+            <Bell className="mr-2 h-5 w-5 text-primary" />
+            Security Notifications
+            {unreadCount > 0 && (
+              <Badge className="ml-2 bg-red-500/20 text-red-400 border-red-500/30 animate-pulse">
+                {unreadCount} new
+              </Badge>
+            )}
+          </span>
+          <div className="flex items-center space-x-2">
+            <Button variant="outline" size="sm" onClick={markAllAsRead} disabled={unreadCount === 0}>
+              <CheckCircle className="h-4 w-4 mr-1" />
+              Mark All Read
+            </Button>
+          </div>
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-4">
+          {/* Filter Buttons */}
+          <div className="flex space-x-2">
+            {[
+              { key: 'all', label: 'All' },
+              { key: 'unread', label: 'Unread' },
+              { key: 'threats', label: 'Threats' },
+              { key: 'system', label: 'System' }
+            ].map((filterOption) => (
+              <Button
+                key={filterOption.key}
+                variant={filter === filterOption.key ? "default" : "outline"}
+                size="sm"
+                onClick={() => setFilter(filterOption.key as any)}
+              >
+                {filterOption.label}
+              </Button>
+            ))}
+          </div>
 
-      {isOpen && (
-        <Card className="absolute right-0 top-12 w-96 z-50 glass-effect border-primary/20">
-          <CardHeader>
-            <CardTitle className="text-foreground flex items-center justify-between">
-              <span className="flex items-center">
-                <Bell className="mr-2 h-5 w-5 text-primary" />
-                Notifications
-              </span>
-              <div className="flex items-center space-x-2">
-                <Badge variant="outline">{unreadCount} unread</Badge>
-                <Button variant="outline" size="sm" onClick={markAllAsRead}>
-                  Mark All Read
-                </Button>
-              </div>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ScrollArea className="h-80">
-              <div className="space-y-3">
-                {notifications.length > 0 ? (
-                  notifications.map((notification) => {
-                    const IconComponent = getNotificationIcon(notification.type);
-                    return (
-                      <div
-                        key={notification.id}
-                        className={`p-3 rounded-lg border transition-all cursor-pointer ${
-                          notification.read
-                            ? 'bg-muted/5 border-border/20'
-                            : 'bg-muted/10 border-border/40 hover:border-primary/30'
-                        }`}
-                        onClick={() => markAsRead(notification.id)}
-                      >
-                        <div className="flex items-start justify-between mb-2">
-                          <div className="flex items-center space-x-2">
-                            <IconComponent className="h-4 w-4 text-primary" />
-                            <Badge className={getNotificationColor(notification.type, notification.priority)}>
-                              {notification.priority.toUpperCase()}
-                            </Badge>
-                            {!notification.read && (
-                              <div className="h-2 w-2 bg-primary rounded-full"></div>
-                            )}
+          {/* Notifications List */}
+          <ScrollArea className="h-80">
+            <div className="space-y-3">
+              {filteredNotifications.length === 0 ? (
+                <div className="text-center text-muted-foreground py-8">
+                  <Bell className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                  <p>No notifications match your filter</p>
+                </div>
+              ) : (
+                filteredNotifications.map((notification) => (
+                  <div
+                    key={notification.id}
+                    className={`p-4 bg-muted/10 rounded-lg border transition-all hover:border-primary/30 ${
+                      !notification.read ? 'border-primary/20 bg-primary/5' : 'border-border/30'
+                    }`}
+                  >
+                    <div className="flex items-start justify-between">
+                      <div className="flex items-start space-x-3 flex-1">
+                        {getTypeIcon(notification.type)}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between mb-1">
+                            <h4 className="text-sm font-semibold text-foreground truncate">
+                              {notification.title}
+                            </h4>
+                            <div className="flex items-center space-x-2 ml-2">
+                              <Badge className={getSeverityColor(notification.severity)}>
+                                {notification.severity.toUpperCase()}
+                              </Badge>
+                              {notification.actionRequired && (
+                                <Badge variant="destructive" className="text-xs">
+                                  ACTION REQUIRED
+                                </Badge>
+                              )}
+                            </div>
                           </div>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              dismissNotification(notification.id);
-                            }}
-                          >
-                            <X className="h-3 w-3" />
-                          </Button>
-                        </div>
-                        
-                        <h4 className="text-sm font-semibold text-foreground mb-1">
-                          {notification.title}
-                        </h4>
-                        <p className="text-xs text-muted-foreground mb-2">
-                          {notification.message}
-                        </p>
-                        
-                        <div className="flex items-center justify-between text-xs">
-                          <span className="text-muted-foreground">
-                            {new Date(notification.timestamp).toLocaleTimeString()}
-                          </span>
-                          {notification.actionable && (
-                            <Button variant="outline" size="sm" className="text-xs">
-                              Take Action
-                            </Button>
-                          )}
+                          <p className="text-xs text-muted-foreground mb-2">
+                            {notification.message}
+                          </p>
+                          <div className="flex items-center justify-between">
+                            <span className="text-xs text-muted-foreground">
+                              {new Date(notification.timestamp).toLocaleString()}
+                            </span>
+                            <div className="flex items-center space-x-1">
+                              {!notification.read && (
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => markAsRead(notification.id)}
+                                  className="h-6 px-2 text-xs"
+                                >
+                                  Mark Read
+                                </Button>
+                              )}
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => removeNotification(notification.id)}
+                                className="h-6 w-6 p-0"
+                              >
+                                <X className="h-3 w-3" />
+                              </Button>
+                            </div>
+                          </div>
                         </div>
                       </div>
-                    );
-                  })
-                ) : (
-                  <div className="text-center text-muted-foreground py-8">
-                    <Bell className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                    <p>No notifications</p>
+                    </div>
                   </div>
-                )}
-              </div>
-            </ScrollArea>
-          </CardContent>
-        </Card>
-      )}
-    </div>
+                ))
+              )}
+            </div>
+          </ScrollArea>
+        </div>
+      </CardContent>
+    </Card>
   );
 };
