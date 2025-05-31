@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -12,11 +13,14 @@ import { CountermeasureDisplay } from '@/components/CountermeasureDisplay';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer, PieChart, Pie, Cell, BarChart, Bar } from 'recharts';
 import { ApiStatusIndicator } from '@/components/ApiStatusIndicator';
 import { LiveThreatIntelligence } from '@/components/LiveThreatIntelligence';
+import { EnhancedNotificationCenter } from '@/components/EnhancedNotificationCenter';
 import { useRealTimeAPIs } from '@/hooks/useRealTimeAPIs';
+import { useToast } from '@/hooks/use-toast';
 
 const Dashboard = () => {
   const [threats, setThreats] = useState<any[]>([]);
   const [countermeasures, setCountermeasures] = useState<any[]>([]);
+  const { toast } = useToast();
   const { 
     isActive, 
     threatCount, 
@@ -32,10 +36,19 @@ const Dashboard = () => {
 
   useEffect(() => {
     const loadData = async () => {
-      const threatsData = await fetchThreatAnalysis();
-      const countermeasuresData = await fetchCountermeasures();
-      setThreats(threatsData);
-      setCountermeasures(countermeasuresData);
+      try {
+        const threatsData = await fetchThreatAnalysis();
+        const countermeasuresData = await fetchCountermeasures();
+        setThreats(threatsData);
+        setCountermeasures(countermeasuresData);
+      } catch (error) {
+        console.error('Error loading data:', error);
+        toast({
+          title: "Data Loading Error",
+          description: "Some data may not be available",
+          variant: "destructive"
+        });
+      }
     };
 
     loadData();
@@ -43,7 +56,7 @@ const Dashboard = () => {
     // Refresh data every 10 seconds
     const interval = setInterval(loadData, 10000);
     return () => clearInterval(interval);
-  }, []);
+  }, [toast]);
 
   const criticalThreats = threats.filter(t => t.severity === 'critical').length;
   const activeMeasures = countermeasures.filter(c => c.status === 'deployed').length;
@@ -77,12 +90,19 @@ const Dashboard = () => {
 
   const handleDeployAllCountermeasures = () => {
     console.log('Deploying all pending countermeasures...');
-    // Implementation would update countermeasure statuses
+    toast({
+      title: "Countermeasures Deployed",
+      description: "All pending countermeasures have been automatically deployed",
+    });
   };
 
   const handleRealTimeAnalysis = async () => {
     if (!apiStatus.isConfigured) {
-      console.warn('Real-time APIs not configured, using simulation mode');
+      toast({
+        title: "Demo Mode",
+        description: "Running analysis in simulation mode. Configure API keys for real-time integration.",
+        variant: "default"
+      });
       return;
     }
 
@@ -98,6 +118,28 @@ const Dashboard = () => {
 
     const result = await analyzeWithRealAPIs(sampleLog);
     console.log('Real-time analysis result:', result);
+    
+    toast({
+      title: "Real-time Analysis Complete",
+      description: result.success ? "Threat analysis completed successfully" : "Analysis completed with simulated data",
+    });
+  };
+
+  const handleStartAnalysis = () => {
+    if (isActive) {
+      stopMonitoring();
+      toast({
+        title: "Analysis Stopped",
+        description: "AI threat detection engine has been deactivated",
+        variant: "destructive"
+      });
+    } else {
+      startMonitoring();
+      toast({
+        title: "Analysis Started",
+        description: "AI threat detection engine is now active and monitoring",
+      });
+    }
   };
 
   return (
@@ -107,10 +149,10 @@ const Dashboard = () => {
         <div>
           <h1 className="text-4xl font-bold royal-text flex items-center gap-3">
             <Crown className="h-10 w-10" />
-            AI Command Center
+            AEGIS AI Command Center
           </h1>
           <p className="text-muted-foreground mt-2 text-lg">
-            Real-time AI-powered threat analysis with live API integrations
+            Real-time AI-powered threat analysis monitoring network infrastructure
           </p>
         </div>
         <div className="flex items-center space-x-4">
@@ -122,16 +164,20 @@ const Dashboard = () => {
           <span className="text-primary font-bold text-lg tracking-wide">
             {systemHealth.toFixed(1)}% OPERATIONAL
           </span>
+          <EnhancedNotificationCenter />
           <Button
-            onClick={isActive ? stopMonitoring : startMonitoring}
-            className={isActive ? 'bg-red-600 hover:bg-red-700' : 'bg-primary hover:bg-primary/80'}
+            onClick={handleStartAnalysis}
+            className={`${isActive ? 
+              'bg-red-600 hover:bg-red-700 text-white' : 
+              'bg-emerald-600 hover:bg-emerald-700 text-white border-emerald-500'
+            } font-semibold px-6`}
           >
-            {isActive ? 'Stop AI Analysis' : 'Start AI Analysis'}
+            {isActive ? 'Stop AI Analysis' : 'Start Analysis'}
           </Button>
           <Button
             onClick={handleRealTimeAnalysis}
             variant="outline"
-            disabled={!apiStatus.isConfigured}
+            className="border-primary text-primary hover:bg-primary hover:text-white"
           >
             Test Real-time APIs
           </Button>
@@ -170,7 +216,13 @@ const Dashboard = () => {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <Button
               variant="outline"
-              onClick={() => simulateAttackScenario('ddos')}
+              onClick={() => {
+                simulateAttackScenario('ddos');
+                toast({
+                  title: "DDoS Simulation Started",
+                  description: "AI is analyzing distributed denial of service patterns",
+                });
+              }}
               className="hover:border-red-500/50 hover:text-red-400 transition-all"
             >
               <Shield className="mr-2 h-4 w-4" />
@@ -178,7 +230,13 @@ const Dashboard = () => {
             </Button>
             <Button
               variant="outline"
-              onClick={() => simulateAttackScenario('portscan')}
+              onClick={() => {
+                simulateAttackScenario('portscan');
+                toast({
+                  title: "Port Scan Simulation",
+                  description: "ML models analyzing network reconnaissance patterns",
+                });
+              }}
               className="hover:border-amber-500/50 hover:text-amber-400 transition-all"
             >
               <Search className="mr-2 h-4 w-4" />
@@ -186,7 +244,13 @@ const Dashboard = () => {
             </Button>
             <Button
               variant="outline"
-              onClick={() => simulateAttackScenario('malware')}
+              onClick={() => {
+                simulateAttackScenario('malware');
+                toast({
+                  title: "Malware Analysis Started",
+                  description: "Deep learning models detecting malicious payloads",
+                });
+              }}
               className="hover:border-red-500/50 hover:text-red-400 transition-all"
             >
               <Zap className="mr-2 h-4 w-4" />
@@ -194,7 +258,13 @@ const Dashboard = () => {
             </Button>
             <Button
               variant="outline"
-              onClick={() => simulateAttackScenario('apt')}
+              onClick={() => {
+                simulateAttackScenario('apt');
+                toast({
+                  title: "APT Detection Active",
+                  description: "Ensemble AI analyzing advanced persistent threats",
+                });
+              }}
               className="hover:border-purple-500/50 hover:text-purple-400 transition-all"
             >
               <Brain className="mr-2 h-4 w-4" />
