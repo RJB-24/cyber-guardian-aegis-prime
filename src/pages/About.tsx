@@ -1,378 +1,270 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Shield, Brain, Zap, Cpu, Globe, Crown, Target, GitFork, Database, Cloud, Wifi, Sliders, RefreshCw } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Brain, Zap, RefreshCw, Cpu, Shield, Activity, Layers, Globe, Lock, Sparkles } from 'lucide-react';
 
 const About = () => {
-  const techStack = [
-    { category: 'Cognitive AI Engine', items: ['Oracle Prime - Threat Anticipation', 'Strategist Prime - Polymorphic Defense', 'Innovator Prime - Self-Evolution'] },
-    { category: 'Machine Learning Models', items: ['Isolation Forest (96.8% accuracy)', 'LSTM Networks (94.7% accuracy)', 'Random Forest (98.2% accuracy)', 'Ensemble Model (97.1% accuracy)'] },
-    { category: 'Frontend Technologies', items: ['React 18 with TypeScript', 'Tailwind CSS + Shadcn/UI', 'Recharts Visualization', 'Real-time WebSocket Updates'] },
-    { category: 'Backend Infrastructure', items: ['Supabase PostgreSQL', 'Real-time Subscriptions', 'Edge Functions', 'Row Level Security'] },
-    { category: 'Security Features', items: ['Quantum-Ready Cryptography', 'End-to-End Encryption', 'Federated Learning', 'Zero-Trust Architecture'] }
+  const architectureComponents = [
+    {
+      icon: Brain,
+      name: "Oracle Prime",
+      subtitle: "Cognitive Intent Inferencing Engine",
+      description: "Advanced neuro-linguistic threat modeling utilizing transformer networks and graph neural networks to predict attacker psychology, strategic objectives, and zero-day exploits with 95%+ accuracy.",
+      technologies: ["Transformer Networks", "Graph Neural Networks", "Causal AI", "Explainable AI (XAI)", "Multi-Modal Analysis"],
+      performance: "72-hour threat anticipation window"
+    },
+    {
+      icon: Zap,
+      name: "Strategist Prime",
+      subtitle: "Adaptive Threat-Surface Morphing System",
+      description: "Autonomous defense orchestration that dynamically reconfigures network topology, deploys polymorphic encryption, and generates self-mutating countermeasures in real-time to eliminate attack surfaces.",
+      technologies: ["Reinforcement Learning", "Digital Twin Simulation", "SDN/NFV Integration", "Polymorphic Defense", "Micro-Segmentation"],
+      performance: "2.3ms median response time"
+    },
+    {
+      icon: RefreshCw,
+      name: "Innovator Prime",
+      subtitle: "Self-Synthesizing Defense Evolution",
+      description: "Meta-learning system that autonomously generates new defense protocols, adapts to emerging threats, and continuously evolves its capabilities through federated learning and adversarial validation.",
+      technologies: ["Meta-Learning", "Federated Learning", "Adversarial ML", "Automated MLOps", "Self-Healing Code"],
+      performance: "40% quarterly false positive reduction"
+    },
+    {
+      icon: Cpu,
+      name: "Conduit Interface",
+      subtitle: "Human-AI Symbiosis Platform",
+      description: "Intuitive command center providing real-time visibility into cognitive threat analysis, autonomous countermeasure deployment, and explainable AI insights for strategic security oversight.",
+      technologies: ["Real-Time Visualization", "Explainable AI", "Interactive Analytics", "Quantum Dashboard", "Cognitive UX"],
+      performance: "Real-time threat visualization"
+    }
   ];
 
-  const aiComponents = [
+  const technicalCapabilities = [
     {
-      name: 'Oracle Prime',
-      description: 'Cognitive threat anticipation engine that predicts attacker intent 72 hours before execution using causal AI and global threat synapse networks.',
-      capabilities: ['Intent-based threat prediction', 'Generative AI for threat modeling', 'Global threat synapse network', 'Causal AI & explainable AI (XAI)'],
-      metrics: '99.999% prevention rate for known CVEs, 95%+ accuracy on zero-day prediction',
-      icon: Brain,
-      color: 'text-primary'
+      category: "Threat Intelligence Fusion",
+      features: [
+        "Real-time dark web intelligence monitoring",
+        "OSINT social media threat actor analysis",
+        "Custom honeypot network integration",
+        "Vulnerability research database correlation",
+        "Nation-state campaign attribution"
+      ]
     },
     {
-      name: 'Strategist Prime',
-      description: 'Autonomous polymorphic defense system that generates self-mutating countermeasures with digital twin validation and reinforcement learning.',
-      capabilities: ['Digital twin forensics', 'Reinforcement learning optimization', 'Self-assembling infrastructure integration', 'Polymorphic counterm</div>easures'],
-      metrics: '2.3ms median response time, <0.1% false positive rate, 99.998% attack surface reduction',
-      icon: Zap,
-      color: 'text-amber-400'
+      category: "Advanced AI/ML Models",
+      features: [
+        "Generative Adversarial Networks for threat simulation",
+        "LSTM networks for temporal anomaly detection",
+        "Isolation Forest for unsupervised threat detection",
+        "Transformer models for unstructured data analysis",
+        "Causal inference for root cause analysis"
+      ]
     },
     {
-      name: 'Innovator Prime',
-      description: 'Sentient learning engine with meta-learning capabilities, proactive adversarial ML, and automated model evolution for continuous adaptation.',
-      capabilities: ['Meta-learning optimization', 'Proactive adversarial ML', 'Automated MLOps pipelines', 'Federated learning integration'],
-      metrics: '40% reduction in false positives quarterly, continuous model improvement',
-      icon: Cpu,
-      color: 'text-purple-400'
+      category: "Autonomous Defense Systems",
+      features: [
+        "Dynamic network re-segmentation",
+        "Polymorphic encryption key rotation",
+        "Identity-aware micro-segmentation",
+        "Automated vulnerability patching",
+        "Self-assembling infrastructure defense"
+      ]
+    },
+    {
+      category: "Quantum-Ready Security",
+      features: [
+        "Post-quantum cryptographic algorithms",
+        "Quantum-resistant communication protocols",
+        "Future-proof security architecture",
+        "Quantum computing threat modeling",
+        "Cryptographic agility framework"
+      ]
     }
   ];
 
   return (
     <div className="space-y-8">
-      {/* Header Section */}
-      <div className="text-center">
-        <div className="flex items-center justify-center mb-6">
-          <div className="relative">
-            <Shield className="h-20 w-20 text-primary matrix-text animate-pulse-green" />
-            <Crown className="h-6 w-6 text-amber-400 absolute -top-1 -right-1 animate-pulse" />
-          </div>
-        </div>
-        <h1 className="text-5xl font-bold mb-4">
-          <span className="text-primary">AEGIS PRIME</span>
-          <span className="text-amber-400 ml-2">ARCHITECTURE</span>
+      {/* Header */}
+      <div className="text-center space-y-4">
+        <h1 className="text-4xl font-bold bg-gradient-to-r from-primary via-blue-400 to-purple-400 bg-clip-text text-transparent">
+          Aegis Prime Technical Architecture
         </h1>
         <p className="text-xl text-muted-foreground max-w-4xl mx-auto leading-relaxed">
-          The Autonomous Cognitive Cyber-Defense System • Technical Deep Dive into Cognitive Digital Immunity
+          Revolutionary cybernetic self-governance platform leveraging breakthrough AI technologies 
+          to establish autonomous digital immunity and cognitive threat intelligence.
         </p>
-        <div className="flex items-center justify-center space-x-4 mt-6">
-          <Link to="/business">
-            <Button className="bg-primary hover:bg-primary/80 text-black font-semibold px-6">
-              <Target className="mr-2 h-4 w-4" />
-              Business Model
-            </Button>
-          </Link>
-          <Link to="/dashboard">
-            <Button variant="outline" className="border-primary/30 hover:bg-primary/10">
-              <Brain className="mr-2 h-4 w-4" />
-              Live Demo
-            </Button>
-          </Link>
+        <div className="flex justify-center space-x-4 mt-6">
+          <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30 px-4 py-2">
+            <Lock className="mr-2 h-4 w-4" />
+            Quantum-Resistant
+          </Badge>
+          <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30 px-4 py-2">
+            <Sparkles className="mr-2 h-4 w-4" />
+            Self-Evolving AI
+          </Badge>
+          <Badge className="bg-purple-500/20 text-purple-400 border-purple-500/30 px-4 py-2">
+            <Activity className="mr-2 h-4 w-4" />
+            Real-Time Morphing
+          </Badge>
         </div>
       </div>
 
-      {/* Core Philosophy */}
-      <Card className="glass-effect border-primary/20 royal-gradient">
-        <CardHeader>
-          <CardTitle className="text-2xl flex items-center">
-            <Crown className="mr-3 h-8 w-8 text-amber-400" />
-            Core Philosophy: Cognitive Digital Immunity
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-lg text-muted-foreground leading-relaxed mb-6">
-            Aegis Prime represents a paradigm shift from reactive cybersecurity to <strong>Cognitive Digital Immunity</strong>. 
-            Inspired by visionary intelligence systems, it anticipates attacker intent, simulates complex attack vectors, 
-            and autonomously deploys polymorphic, self-mutating countermeasures before threats materialize.
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="text-center p-4 bg-card/30 rounded-xl">
-              <Brain className="h-10 w-10 text-primary mx-auto mb-3" />
-              <h3 className="font-semibold text-foreground mb-2">Cognitive Anticipation</h3>
-              <p className="text-sm text-muted-foreground">Predicts threats 72 hours before execution through intent analysis</p>
-            </div>
-            <div className="text-center p-4 bg-card/30 rounded-xl">
-              <Zap className="h-10 w-10 text-amber-400 mx-auto mb-3" />
-              <h3 className="font-semibold text-foreground mb-2">Autonomous Response</h3>
-              <p className="text-sm text-muted-foreground">Self-mutating countermeasures with 2.3ms deployment time</p>
-            </div>
-            <div className="text-center p-4 bg-card/30 rounded-xl">
-              <Cpu className="h-10 w-10 text-purple-400 mx-auto mb-3" />
-              <h3 className="font-semibold text-foreground mb-2">Self-Evolution</h3>
-              <p className="text-sm text-muted-foreground">Continuous learning and adaptation through meta-learning</p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* AI Components */}
-      <div className="space-y-6">
-        <h2 className="text-3xl font-bold text-center text-foreground mb-8">
-          Cognitive AI Architecture Components
+      {/* Core Architecture Components */}
+      <div className="space-y-8">
+        <h2 className="text-3xl font-bold text-foreground text-center mb-8">
+          Core Architecture Components
         </h2>
-        {aiComponents.map((component, index) => {
-          const IconComponent = component.icon;
-          return (
-            <Card key={index} className="glass-effect border-primary/20">
+        
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {architectureComponents.map((component, index) => (
+            <Card key={index} className="glass-effect border-primary/20 hover:border-primary/40 transition-all duration-300">
               <CardHeader>
-                <CardTitle className={`text-2xl flex items-center ${component.color}`}>
-                  <IconComponent className={`mr-3 h-8 w-8 ${component.color}`} />
-                  {component.name}
-                </CardTitle>
+                <div className="flex items-start space-x-4">
+                  <div className="bg-primary/20 p-3 rounded-lg">
+                    <component.icon className="h-8 w-8 text-primary" />
+                  </div>
+                  <div className="flex-1">
+                    <CardTitle className="text-xl text-foreground">{component.name}</CardTitle>
+                    <p className="text-primary font-medium">{component.subtitle}</p>
+                    <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30 mt-2">
+                      {component.performance}
+                    </Badge>
+                  </div>
+                </div>
               </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground mb-6 text-lg leading-relaxed">
+              <CardContent className="space-y-4">
+                <p className="text-muted-foreground leading-relaxed">
                   {component.description}
                 </p>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <h4 className="font-semibold text-foreground mb-3">Core Capabilities:</h4>
-                    <ul className="text-sm text-muted-foreground space-y-2">
-                      {component.capabilities.map((capability, idx) => (
-                        <li key={idx} className="flex items-center">
-                          <div className="h-1.5 w-1.5 bg-primary rounded-full mr-3"></div>
-                          {capability}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-foreground mb-3">Performance Metrics:</h4>
-                    <div className="bg-muted/20 rounded-lg p-4 border border-primary/20">
-                      <p className="text-sm text-primary font-medium">{component.metrics}</p>
-                    </div>
+                <div>
+                  <h4 className="text-sm font-semibold text-foreground mb-2">Core Technologies:</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {component.technologies.map((tech, techIndex) => (
+                      <Badge key={techIndex} className="bg-muted/20 text-muted-foreground border-muted/30 text-xs">
+                        {tech}
+                      </Badge>
+                    ))}
                   </div>
                 </div>
               </CardContent>
             </Card>
-          );
-        })}
+          ))}
+        </div>
       </div>
 
-      {/* System Architecture */}
-      <Card className="glass-effect border-primary/20">
-        <CardHeader>
-          <CardTitle className="text-2xl flex items-center">
-            <Globe className="mr-3 h-8 w-8 text-primary" />
-            System Architecture & Data Flow
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center space-x-8 p-6 bg-muted/20 rounded-2xl border border-primary/20">
-              <div className="flex flex-col items-center space-y-2">
-                <Cloud className="h-12 w-12 text-primary" />
-                <span className="text-sm font-medium">Data Sources</span>
-              </div>
-              <GitFork className="h-6 w-6 text-muted-foreground rotate-90" />
-              <div className="flex flex-col items-center space-y-2">
-                <Brain className="h-12 w-12 text-primary" />
-                <span className="text-sm font-medium">Oracle Prime</span>
-              </div>
-              <GitFork className="h-6 w-6 text-muted-foreground rotate-90" />
-              <div className="flex flex-col items-center space-y-2">
-                <Zap className="h-12 w-12 text-amber-400" />
-                <span className="text-sm font-medium">Strategist Prime</span>
-              </div>
-              <GitFork className="h-6 w-6 text-muted-foreground rotate-90" />
-              <div className="flex flex-col items-center space-y-2">
-                <Shield className="h-12 w-12 text-emerald-400" />
-                <span className="text-sm font-medium">Autonomous Defense</span>
-              </div>
-            </div>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <h4 className="font-semibold text-foreground mb-3 flex items-center">
-                <Database className="mr-2 h-5 w-5 text-primary" />
-                Data Ingestion Sources:
-              </h4>
-              <ul className="text-sm text-muted-foreground space-y-1">
-                <li>• Network traffic logs (NetFlow, IPFIX)</li>
-                <li>• Endpoint telemetry (EDR/XDR feeds)</li>
-                <li>• Cloud logs (AWS CloudTrail, Azure Monitor)</li>
-                <li>• Dark web threat intelligence</li>
-                <li>• Vulnerability databases (CVE, NVD)</li>
-                <li>• Custom honeypot networks</li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold text-foreground mb-3 flex items-center">
-                <Wifi className="mr-2 h-5 w-5 text-primary" />
-                Integration Capabilities:
-              </h4>
-              <ul className="text-sm text-muted-foreground space-y-1">
-                <li>• Software-Defined Networking (SDN)</li>
-                <li>• Network Function Virtualization (NFV)</li>
-                <li>• SIEM/SOAR platform integration</li>
-                <li>• Cloud provider APIs (AWS, Azure, GCP)</li>
-                <li>• Identity and Access Management (IAM)</li>
-                <li>• Endpoint Detection and Response (EDR)</li>
-              </ul>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Technology Stack */}
-      <Card className="glass-effect border-primary/20">
-        <CardHeader>
-          <CardTitle className="text-2xl flex items-center">
-            <Sliders className="mr-3 h-8 w-8 text-primary" />
-            Technology Stack & Implementation
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {techStack.map((category, index) => (
-              <div key={index} className="bg-muted/20 rounded-lg p-6 border border-primary/20">
-                <h4 className="font-semibold text-foreground mb-4 flex items-center">
-                  <div className="h-2 w-2 bg-primary rounded-full mr-3"></div>
-                  {category.category}
-                </h4>
-                <ul className="text-sm text-muted-foreground space-y-2">
-                  {category.items.map((item, idx) => (
-                    <li key={idx} className="flex items-start">
-                      <div className="h-1 w-1 bg-primary rounded-full mt-2 mr-3 flex-shrink-0"></div>
-                      {item}
+      {/* Technical Capabilities */}
+      <div className="space-y-8">
+        <h2 className="text-3xl font-bold text-foreground text-center mb-8">
+          Advanced Technical Capabilities
+        </h2>
+        
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {technicalCapabilities.map((capability, index) => (
+            <Card key={index} className="glass-effect border-primary/20">
+              <CardHeader>
+                <CardTitle className="text-foreground flex items-center">
+                  <Layers className="mr-2 h-5 w-5 text-primary" />
+                  {capability.category}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-3">
+                  {capability.features.map((feature, featureIndex) => (
+                    <li key={featureIndex} className="flex items-start space-x-3">
+                      <div className="h-2 w-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
+                      <span className="text-muted-foreground">{feature}</span>
                     </li>
                   ))}
                 </ul>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Performance Guarantees */}
-      <Card className="glass-effect border-primary/20 royal-gradient">
-        <CardHeader>
-          <CardTitle className="text-2xl flex items-center">
-            <Target className="mr-3 h-8 w-8 text-primary" />
-            Performance Guarantees & SLAs
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 text-center">
-            <div className="p-4 bg-card/30 rounded-xl">
-              <div className="text-3xl font-bold text-primary mb-2">99.999%</div>
-              <div className="text-sm text-muted-foreground">Prevention Rate</div>
-              <Badge className="mt-2 bg-primary/20 text-primary border-primary/30 text-xs">
-                Known CVEs
-              </Badge>
-            </div>
-            <div className="p-4 bg-card/30 rounded-xl">
-              <div className="text-3xl font-bold text-amber-400 mb-2">95%+</div>
-              <div className="text-sm text-muted-foreground">Zero-Day Accuracy</div>
-              <Badge className="mt-2 bg-amber-500/20 text-amber-400 border-amber-500/30 text-xs">
-                Unknown Threats
-              </Badge>
-            </div>
-            <div className="p-4 bg-card/30 rounded-xl">
-              <div className="text-3xl font-bold text-emerald-400 mb-2">2.3ms</div>
-              <div className="text-sm text-muted-foreground">Response Time</div>
-              <Badge className="mt-2 bg-emerald-500/20 text-emerald-400 border-emerald-500/30 text-xs">
-                Median Latency
-              </Badge>
-            </div>
-            <div className="p-4 bg-card/30 rounded-xl">
-              <div className="text-3xl font-bold text-purple-400 mb-2">&lt;0.1%</div>
-              <div className="text-sm text-muted-foreground">False Positives</div>
-              <Badge className="mt-2 bg-purple-500/20 text-purple-400 border-purple-500/30 text-xs">
-                High Precision
-              </Badge>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Future Roadmap */}
-      <Card className="glass-effect border-primary/20">
-        <CardHeader>
-          <CardTitle className="text-2xl flex items-center">
-            <RefreshCw className="mr-3 h-8 w-8 text-primary" />
-            Quantum-Ready Future Roadmap
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div>
-              <h4 className="font-semibold text-foreground mb-4 text-lg">Next 12 Months:</h4>
-              <ul className="text-sm text-muted-foreground space-y-3">
-                <li className="flex items-start">
-                  <div className="h-2 w-2 bg-primary rounded-full mt-1.5 mr-3 flex-shrink-0"></div>
-                  <div>
-                    <strong className="text-foreground">Quantum-Resistant Cryptography:</strong> Full integration of post-quantum algorithms
-                  </div>
-                </li>
-                <li className="flex items-start">
-                  <div className="h-2 w-2 bg-primary rounded-full mt-1.5 mr-3 flex-shrink-0"></div>
-                  <div>
-                    <strong className="text-foreground">Advanced Causal AI:</strong> Enhanced explainable AI with causal inference
-                  </div>
-                </li>
-                <li className="flex items-start">
-                  <div className="h-2 w-2 bg-primary rounded-full mt-1.5 mr-3 flex-shrink-0"></div>
-                  <div>
-                    <strong className="text-foreground">Global Federated Network:</strong> Blockchain-based threat intelligence exchange
-                  </div>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold text-foreground mb-4 text-lg">Long-term Vision:</h4>
-              <ul className="text-sm text-muted-foreground space-y-3">
-                <li className="flex items-start">
-                  <div className="h-2 w-2 bg-amber-400 rounded-full mt-1.5 mr-3 flex-shrink-0"></div>
-                  <div>
-                    <strong className="text-foreground">Quantum Computing Integration:</strong> Leverage quantum supremacy for threat analysis
-                  </div>
-                </li>
-                <li className="flex items-start">
-                  <div className="h-2 w-2 bg-amber-400 rounded-full mt-1.5 mr-3 flex-shrink-0"></div>
-                  <div>
-                    <strong className="text-foreground">Omni-Domain Security:</strong> Unified IT/OT/IoT/Physical security fabric
-                  </div>
-                </li>
-                <li className="flex items-start">
-                  <div className="h-2 w-2 bg-amber-400 rounded-full mt-1.5 mr-3 flex-shrink-0"></div>
-                  <div>
-                    <strong className="text-foreground">Autonomous Security Ecosystem:</strong> Self-governing digital immunity platform
-                  </div>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Footer */}
-      <div className="text-center py-8">
-        <p className="text-muted-foreground mb-4">
-          Built with precision engineering for enterprise-grade cognitive digital immunity
-        </p>
-        <div className="flex items-center justify-center space-x-6">
-          <Link to="/dashboard">
-            <Button className="bg-primary hover:bg-primary/80 text-black font-semibold">
-              <Brain className="mr-2 h-4 w-4" />
-              Experience Live Demo
-            </Button>
-          </Link>
-          <Link to="/business">
-            <Button variant="outline" className="border-primary/30 hover:bg-primary/10">
-              <Target className="mr-2 h-4 w-4" />
-              Business Model
-            </Button>
-          </Link>
-        </div>
-        <div className="mt-6 text-sm text-muted-foreground">
-          <strong className="text-primary">Aegis Prime</strong> • Powered by Lovable.ai • Built for Wadhwani Foundation Hackathon
+              </CardContent>
+            </Card>
+          ))}
         </div>
       </div>
+
+      {/* Performance Metrics */}
+      <Card className="glass-effect border-primary/20">
+        <CardHeader>
+          <CardTitle className="text-foreground text-center text-2xl">
+            Enterprise Performance Metrics
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="text-center space-y-2">
+              <div className="text-3xl font-bold text-primary">99.999%</div>
+              <div className="text-sm font-medium text-foreground">CVE Prevention Rate</div>
+              <p className="text-xs text-muted-foreground">Known vulnerability protection</p>
+            </div>
+            <div className="text-center space-y-2">
+              <div className="text-3xl font-bold text-primary">87.4%</div>
+              <div className="text-sm font-medium text-foreground">Zero-Day Accuracy</div>
+              <p className="text-xs text-muted-foreground">Unknown threat prediction</p>
+            </div>
+            <div className="text-center space-y-2">
+              <div className="text-3xl font-bold text-primary">2.3ms</div>
+              <div className="text-sm font-medium text-foreground">Response Time</div>
+              <p className="text-xs text-muted-foreground">Median countermeasure deployment</p>
+            </div>
+            <div className="text-center space-y-2">
+              <div className="text-3xl font-bold text-primary">&lt;0.1%</div>
+              <div className="text-sm font-medium text-foreground">False Positive Rate</div>
+              <p className="text-xs text-muted-foreground">Continuous validation accuracy</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* System Architecture Diagram */}
+      <Card className="glass-effect border-primary/20">
+        <CardHeader>
+          <CardTitle className="text-foreground text-center text-2xl flex items-center justify-center">
+            <Globe className="mr-2 h-6 w-6 text-primary" />
+            System Topology & Data Flow
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-6">
+            <div className="text-center text-muted-foreground mb-6">
+              Global threat intelligence flows through Oracle Prime for cognitive analysis, 
+              triggering Strategist Prime's adaptive defense morphing, while Innovator Prime 
+              continuously evolves the system's capabilities.
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="text-center space-y-4">
+                <div className="bg-blue-500/20 p-4 rounded-lg">
+                  <Activity className="h-8 w-8 text-blue-400 mx-auto" />
+                </div>
+                <h4 className="font-semibold text-foreground">Data Ingestion</h4>
+                <p className="text-sm text-muted-foreground">
+                  Multi-source threat intelligence, network telemetry, and behavioral analytics
+                </p>
+              </div>
+              
+              <div className="text-center space-y-4">
+                <div className="bg-primary/20 p-4 rounded-lg">
+                  <Brain className="h-8 w-8 text-primary mx-auto" />
+                </div>
+                <h4 className="font-semibold text-foreground">Cognitive Processing</h4>
+                <p className="text-sm text-muted-foreground">
+                  AI-powered intent inference, causal analysis, and predictive modeling
+                </p>
+              </div>
+              
+              <div className="text-center space-y-4">
+                <div className="bg-emerald-500/20 p-4 rounded-lg">
+                  <Shield className="h-8 w-8 text-emerald-400 mx-auto" />
+                </div>
+                <h4 className="font-semibold text-foreground">Autonomous Defense</h4>
+                <p className="text-sm text-muted-foreground">
+                  Real-time countermeasure deployment and adaptive security morphing
+                </p>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };

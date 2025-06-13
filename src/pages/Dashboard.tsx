@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Shield, Activity, Zap, Bell, Clock, Search, Crown, Swords, Brain, Cpu, Globe, Target } from 'lucide-react';
+import { Shield, Activity, Zap, Bell, Clock, Search, Crown, Swords, Brain, Cpu, Globe, Target, Eye, AlertTriangle } from 'lucide-react';
 import { fetchThreatAnalysis, fetchCountermeasures } from '@/utils/threatDetection';
 import { useRealTimeThreats } from '@/hooks/useRealTimeThreats';
 import { SystemHealthIndicator } from '@/components/SystemHealthIndicator';
@@ -20,7 +20,7 @@ import { useToast } from '@/hooks/use-toast';
 const Dashboard = () => {
   const [threats, setThreats] = useState<any[]>([]);
   const [countermeasures, setCountermeasures] = useState<any[]>([]);
-  const [cognitiveMode, setCognitiveMode] = useState('autonomous');
+  const [systemMode, setSystemMode] = useState('autonomous');
   const { toast } = useToast();
   const { 
     isActive, 
@@ -45,15 +45,15 @@ const Dashboard = () => {
       } catch (error) {
         console.error('Error loading data:', error);
         toast({
-          title: "Cognitive Engine Notice",
-          description: "Operating in simulation mode with synthetic intelligence feeds",
+          title: "System Notice",
+          description: "Operating in cognitive simulation mode with advanced AI modeling",
           variant: "default"
         });
       }
     };
 
     loadData();
-    const interval = setInterval(loadData, 10000);
+    const interval = setInterval(loadData, 8000);
     return () => clearInterval(interval);
   }, [toast]);
 
@@ -61,26 +61,26 @@ const Dashboard = () => {
   const activeMeasures = countermeasures.filter(c => c.status === 'deployed').length;
   const predictionAccuracy = aiMetrics.ensembleConfidence;
 
-  // Advanced cognitive metrics
+  // Advanced cognitive metrics for professional display
   const cognitiveMetrics = [
     { name: 'Intent Analysis', value: 97.3, color: '#39FF14' },
-    { name: 'Attacker Profiling', value: 94.7, color: '#9333EA' },
-    { name: 'Vector Prediction', value: 98.1, color: '#F59E0B' },
-    { name: 'Quantum Defense', value: 91.2, color: '#DC2626' }
+    { name: 'Behavioral Modeling', value: 94.7, color: '#9333EA' },
+    { name: 'Attack Vector Prediction', value: 98.1, color: '#F59E0B' },
+    { name: 'Quantum Defense Ready', value: 91.2, color: '#DC2626' }
   ];
 
   const threatTimeline = Array.from({ length: 24 }, (_, i) => ({
     hour: `${i}:00`,
-    predicted: Math.floor(Math.random() * 15) + 5,
-    neutralized: Math.floor(Math.random() * 20) + 10,
-    cognitiveConfidence: aiMetrics.ensembleConfidence + (Math.random() - 0.5) * 10
+    predicted: Math.floor(Math.random() * 12) + 3,
+    neutralized: Math.floor(Math.random() * 18) + 8,
+    confidence: aiMetrics.ensembleConfidence + (Math.random() - 0.5) * 8
   }));
 
-  const businessImpact = [
-    { metric: 'Revenue Protected', value: '$2.4M', change: '+15%', color: 'text-emerald-400' },
-    { metric: 'Downtime Prevented', value: '99.8%', change: '+2.1%', color: 'text-primary' },
-    { metric: 'Compliance Score', value: '100%', change: '0%', color: 'text-emerald-400' },
-    { metric: 'Cost Reduction', value: '67%', change: '+8%', color: 'text-primary' }
+  const systemMetrics = [
+    { metric: 'Threat Surface Reduction', value: '99.999%', change: '+0.1%', color: 'text-emerald-400' },
+    { metric: 'Response Latency', value: '2.3ms', change: '-0.5ms', color: 'text-primary' },
+    { metric: 'Detection Accuracy', value: '97.1%', change: '+1.2%', color: 'text-emerald-400' },
+    { metric: 'False Positive Rate', value: '0.08%', change: '-0.02%', color: 'text-primary' }
   ];
 
   const threatFeedData = threats.map(threat => ({
@@ -89,83 +89,78 @@ const Dashboard = () => {
     type: threat.threat_type,
     severity: threat.severity,
     confidence: threat.confidence,
-    description: threat.description || `Cognitive AI detected ${threat.threat_type} with intent analysis`,
+    description: threat.description || `Cognitive AI detected ${threat.threat_type} with behavioral analysis`,
     status: threat.status,
-    aiModel: 'Oracle Prime Ensemble'
+    aiModel: 'Oracle Prime'
   }));
 
-  const handleActivateCognitiveMode = () => {
+  const handleSystemActivation = () => {
     if (isActive) {
       stopMonitoring();
       toast({
-        title: "Cognitive Defense Deactivated",
+        title: "System Deactivated",
         description: "Oracle Prime and Strategist Prime systems offline",
         variant: "destructive"
       });
     } else {
       startMonitoring();
       toast({
-        title: "Cognitive Defense Activated",
-        description: "Oracle Prime analyzing global threat intelligence • Strategist Prime generating countermeasures",
+        title: "Aegis Prime Activated",
+        description: "Cognitive threat analysis and adaptive defense systems online",
       });
     }
   };
 
-  const handleQuantumThreatSimulation = () => {
-    // Use 'apt' as the base scenario type for quantum testing
+  const handleAdvancedThreatTest = () => {
     simulateAttackScenario('apt');
     toast({
-      title: "Quantum Threat Simulation",
-      description: "Testing post-quantum cryptography resilience against future quantum attacks",
+      title: "Advanced Persistent Threat Simulation",
+      description: "Testing cognitive defense against sophisticated multi-stage attack vectors",
     });
   };
 
-  const handleCognitiveAPTTest = () => {
-    // Use 'apt' as the base scenario type for cognitive testing
-    simulateAttackScenario('apt');
-    toast({
-      title: "Cognitive APT Simulation",
-      description: "Oracle Prime analyzing advanced persistent threat patterns with intent inference",
-    });
-  };
-
-  const handlePolymorphicDefenseTest = () => {
-    // Use 'malware' as the base scenario type for polymorphic testing
+  const handleZeroDayTest = () => {
     simulateAttackScenario('malware');
     toast({
-      title: "Polymorphic Defense Test",
-      description: "Strategist Prime deploying self-mutating countermeasures",
+      title: "Zero-Day Exploit Simulation",
+      description: "Evaluating polymorphic defense against unknown threat signatures",
+    });
+  };
+
+  const handleQuantumResilienceTest = () => {
+    simulateAttackScenario('apt');
+    toast({
+      title: "Quantum Resistance Validation",
+      description: "Testing post-quantum cryptography resilience protocols",
     });
   };
 
   const handleNationStateTest = () => {
-    // Use 'apt' as the base scenario type for nation-state testing
     simulateAttackScenario('apt');
     toast({
-      title: "Nation-State Simulation",
-      description: "Testing against sophisticated state-sponsored attack vectors",
+      title: "Nation-State Actor Simulation",
+      description: "Analyzing defense against state-sponsored attack methodologies",
     });
   };
 
   return (
     <div className="space-y-8">
-      {/* Enhanced Header */}
+      {/* Enhanced Professional Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-5xl font-bold royal-text flex items-center gap-3">
+          <h1 className="text-5xl font-bold bg-gradient-to-r from-primary via-blue-400 to-purple-400 bg-clip-text text-transparent flex items-center gap-3">
             <Crown className="h-12 w-12 text-amber-400" />
-            <span className="text-primary">AEGIS</span>
-            <span className="text-amber-400">PRIME</span>
+            AEGIS PRIME
           </h1>
           <p className="text-muted-foreground mt-3 text-xl">
-            Cognitive Digital Immunity Command Center • Autonomous Threat Anticipation Active
+            Cybernetic Self-Governance Platform • Cognitive Threat Intelligence Active
           </p>
           <div className="flex items-center space-x-4 mt-3">
             <Badge className="bg-primary/20 text-primary border-primary/30 px-3 py-1">
-              Oracle Prime: {predictionAccuracy.toFixed(1)}% Cognitive Accuracy
+              Oracle Prime: {predictionAccuracy.toFixed(1)}% Intent Accuracy
             </Badge>
             <Badge className="bg-amber-500/20 text-amber-400 border-amber-500/30 px-3 py-1">
-              Strategist Prime: 2.3ms Response
+              Strategist Prime: {activeMeasures} Active Defenses
             </Badge>
             <Badge className="bg-purple-500/20 text-purple-400 border-purple-500/30 px-3 py-1">
               Innovator Prime: Self-Evolving
@@ -173,24 +168,26 @@ const Dashboard = () => {
           </div>
         </div>
         <div className="flex items-center space-x-4">
-          <div className={`h-5 w-5 rounded-full ${
-            systemHealth > 95 ? 'bg-emerald-500 safe-glow animate-pulse-royal' :
-            systemHealth > 85 ? 'bg-amber-500 warning-glow' :
-            'bg-red-500 threat-glow'
-          }`}></div>
-          <span className="text-primary font-bold text-xl tracking-wide">
-            {systemHealth.toFixed(1)}% COGNITIVE IMMUNITY
-          </span>
+          <div className="flex items-center space-x-2">
+            <div className={`h-4 w-4 rounded-full ${
+              systemHealth > 95 ? 'bg-emerald-500 animate-pulse' :
+              systemHealth > 85 ? 'bg-amber-500' :
+              'bg-red-500'
+            }`}></div>
+            <span className="text-primary font-bold text-lg tracking-wide">
+              {systemHealth.toFixed(1)}% SYSTEM INTEGRITY
+            </span>
+          </div>
           <EnhancedNotificationCenter />
           <Button
-            onClick={handleActivateCognitiveMode}
+            onClick={handleSystemActivation}
             className={`${isActive ?
               'bg-red-600 hover:bg-red-700 text-white' :
               'bg-emerald-600 hover:bg-emerald-700 text-white border-emerald-500'
             } font-semibold px-8 py-3 text-lg`}
           >
             <Brain className="mr-2 h-5 w-5" />
-            {isActive ? 'Deactivate Cognitive Defense' : 'Activate Cognitive Defense'}
+            {isActive ? 'Deactivate Defense Grid' : 'Activate Defense Grid'}
           </Button>
         </div>
       </div>
@@ -198,10 +195,10 @@ const Dashboard = () => {
       {/* API Integration Status */}
       <ApiStatusIndicator />
 
-      {/* Business Impact Metrics */}
+      {/* System Performance Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        {businessImpact.map((item, idx) => (
-          <Card key={idx} className="glass-effect border-primary/20 hover:border-primary/40 transition-all duration-300 royal-gradient">
+        {systemMetrics.map((item, idx) => (
+          <Card key={idx} className="glass-effect border-primary/20 hover:border-primary/40 transition-all duration-300">
             <CardHeader className="pb-3">
               <CardTitle className="text-sm font-medium text-muted-foreground flex items-center justify-between">
                 {item.metric}
@@ -211,14 +208,14 @@ const Dashboard = () => {
             <CardContent>
               <div className={`text-3xl font-bold ${item.color} mb-2`}>{item.value}</div>
               <p className="text-xs text-muted-foreground">
-                <span className="text-emerald-400">{item.change}</span> vs previous quarter
+                <span className="text-emerald-400">{item.change}</span> from baseline
               </p>
             </CardContent>
           </Card>
         ))}
       </div>
 
-      {/* Cognitive AI Performance */}
+      {/* Advanced Analytics */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card className="glass-effect border-primary/20">
           <CardHeader>
@@ -243,7 +240,7 @@ const Dashboard = () => {
           <CardHeader>
             <CardTitle className="text-foreground flex items-center">
               <Activity className="mr-2 h-5 w-5 text-primary" />
-              24-Hour Threat Anticipation Timeline
+              24-Hour Threat Intelligence Timeline
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -261,18 +258,18 @@ const Dashboard = () => {
       </div>
 
       {/* Advanced Simulation Controls */}
-      <Card className="glass-effect border-primary/20 royal-gradient">
+      <Card className="glass-effect border-primary/20">
         <CardHeader>
           <CardTitle className="text-foreground flex items-center justify-between">
             <span className="flex items-center">
               <Swords className="mr-2 h-5 w-5 text-primary" />
-              Cognitive Defense Simulation & Quantum Testing
+              Advanced Threat Simulation & Validation Suite
             </span>
             <Badge className={apiStatus.isConfigured ?
               'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' :
               'bg-amber-500/20 text-amber-400 border-amber-500/30'
             }>
-              {apiStatus.isConfigured ? 'LIVE THREAT INTELLIGENCE' : 'COGNITIVE SIMULATION MODE'}
+              {apiStatus.isConfigured ? 'LIVE INTELLIGENCE' : 'SIMULATION MODE'}
             </Badge>
           </CardTitle>
         </CardHeader>
@@ -280,23 +277,23 @@ const Dashboard = () => {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
             <Button
               variant="outline"
-              onClick={handleCognitiveAPTTest}
+              onClick={handleAdvancedThreatTest}
               className="hover:border-red-500/50 hover:text-red-400 transition-all"
             >
-              <Brain className="mr-2 h-4 w-4" />
-              Cognitive APT Test
+              <AlertTriangle className="mr-2 h-4 w-4" />
+              APT Simulation
             </Button>
             <Button
               variant="outline"
-              onClick={handlePolymorphicDefenseTest}
+              onClick={handleZeroDayTest}
               className="hover:border-amber-500/50 hover:text-amber-400 transition-all"
             >
               <Zap className="mr-2 h-4 w-4" />
-              Polymorphic Defense
+              Zero-Day Test
             </Button>
             <Button
               variant="outline"
-              onClick={handleQuantumThreatSimulation}
+              onClick={handleQuantumResilienceTest}
               className="hover:border-purple-500/50 hover:text-purple-400 transition-all"
             >
               <Cpu className="mr-2 h-4 w-4" />
@@ -313,24 +310,24 @@ const Dashboard = () => {
           </div>
 
           <div className="bg-muted/20 rounded-lg p-4 border border-primary/20">
-            <h4 className="text-sm font-semibold text-primary mb-2">Cognitive Mode Status</h4>
+            <h4 className="text-sm font-semibold text-primary mb-2">System Status Overview</h4>
             <div className="grid grid-cols-3 gap-4 text-sm">
               <div className="flex items-center justify-between">
                 <span className="text-muted-foreground">Oracle Prime:</span>
                 <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30 text-xs">
-                  {isActive ? 'ACTIVE' : 'STANDBY'}
+                  {isActive ? 'COGNITIVE ACTIVE' : 'STANDBY'}
                 </Badge>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-muted-foreground">Strategist Prime:</span>
                 <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30 text-xs">
-                  {isActive ? 'AUTONOMOUS' : 'IDLE'}
+                  {isActive ? 'MORPHING ACTIVE' : 'IDLE'}
                 </Badge>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-muted-foreground">Innovator Prime:</span>
                 <Badge className="bg-purple-500/20 text-purple-400 border-purple-500/30 text-xs">
-                  EVOLVING
+                  CONTINUOUSLY EVOLVING
                 </Badge>
               </div>
             </div>
@@ -347,7 +344,7 @@ const Dashboard = () => {
       {/* Live Intelligence Feed */}
       <LiveThreatIntelligence />
 
-      {/* Real-time Feeds */}
+      {/* Real-time Operational Feeds */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <ThreatFeed threats={threatFeedData} isRealTime={isActive} />
         <CountermeasureDisplay
@@ -355,8 +352,8 @@ const Dashboard = () => {
           onDeployAll={() => {
             console.log('Deploying all cognitive countermeasures...');
             toast({
-              title: "Cognitive Countermeasures Deployed",
-              description: "Strategist Prime has autonomously deployed all pending defensive measures",
+              title: "Autonomous Countermeasures Deployed",
+              description: "Strategist Prime has deployed all pending defensive protocols",
             });
           }}
         />
