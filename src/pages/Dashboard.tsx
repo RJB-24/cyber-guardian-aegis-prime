@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -13,7 +12,7 @@ import { CountermeasureDisplay } from '@/components/CountermeasureDisplay';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer, PieChart, Pie, Cell, BarChart, Bar, Area, AreaChart } from 'recharts';
 import { ApiStatusIndicator } from '@/components/ApiStatusIndicator';
 import { LiveThreatIntelligence } from '@/components/LiveThreatIntelligence';
-import { EnhancedNotificationCenter } from '@/components/EnhancedNotificationCenter';
+import { NotificationButton } from '@/components/NotificationButton';
 import { useRealTimeAPIs } from '@/hooks/useRealTimeAPIs';
 import { useToast } from '@/hooks/use-toast';
 import { QuantumThreatAnalysis } from '@/components/QuantumThreatAnalysis';
@@ -183,7 +182,7 @@ const Dashboard = () => {
               {systemHealth.toFixed(1)}% SYSTEM INTEGRITY
             </span>
           </div>
-          <EnhancedNotificationCenter />
+          <NotificationButton />
           <Button
             onClick={handleSystemActivation}
             className={`${isActive ?
@@ -220,19 +219,11 @@ const Dashboard = () => {
         ))}
       </div>
 
-      {/* Revolutionary Quantum Threat Analysis */}
+      {/* Revolutionary Advanced Features */}
       <QuantumThreatAnalysis />
-
-      {/* Advanced Behavioral Analysis Engine */}
       <BehavioralAnalysisEngine />
-
-      {/* Network Topology Visualizer */}
       <NetworkTopologyVisualizer />
-
-      {/* Advanced Incident Response System */}
       <AdvancedIncidentResponse />
-
-      {/* Threat Hunting Dashboard */}
       <ThreatHuntingDashboard />
 
       {/* Advanced Analytics */}
