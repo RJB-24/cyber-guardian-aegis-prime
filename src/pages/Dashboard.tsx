@@ -112,10 +112,38 @@ const Dashboard = () => {
   };
 
   const handleQuantumThreatSimulation = () => {
-    simulateAttackScenario('quantum-resistant-test');
+    // Use 'apt' as the base scenario type for quantum testing
+    simulateAttackScenario('apt');
     toast({
       title: "Quantum Threat Simulation",
       description: "Testing post-quantum cryptography resilience against future quantum attacks",
+    });
+  };
+
+  const handleCognitiveAPTTest = () => {
+    // Use 'apt' as the base scenario type for cognitive testing
+    simulateAttackScenario('apt');
+    toast({
+      title: "Cognitive APT Simulation",
+      description: "Oracle Prime analyzing advanced persistent threat patterns with intent inference",
+    });
+  };
+
+  const handlePolymorphicDefenseTest = () => {
+    // Use 'malware' as the base scenario type for polymorphic testing
+    simulateAttackScenario('malware');
+    toast({
+      title: "Polymorphic Defense Test",
+      description: "Strategist Prime deploying self-mutating countermeasures",
+    });
+  };
+
+  const handleNationStateTest = () => {
+    // Use 'apt' as the base scenario type for nation-state testing
+    simulateAttackScenario('apt');
+    toast({
+      title: "Nation-State Simulation",
+      description: "Testing against sophisticated state-sponsored attack vectors",
     });
   };
 
@@ -252,13 +280,7 @@ const Dashboard = () => {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
             <Button
               variant="outline"
-              onClick={() => {
-                simulateAttackScenario('cognitive-apt');
-                toast({
-                  title: "Cognitive APT Simulation",
-                  description: "Oracle Prime analyzing advanced persistent threat patterns with intent inference",
-                });
-              }}
+              onClick={handleCognitiveAPTTest}
               className="hover:border-red-500/50 hover:text-red-400 transition-all"
             >
               <Brain className="mr-2 h-4 w-4" />
@@ -266,13 +288,7 @@ const Dashboard = () => {
             </Button>
             <Button
               variant="outline"
-              onClick={() => {
-                simulateAttackScenario('polymorphic-malware');
-                toast({
-                  title: "Polymorphic Defense Test",
-                  description: "Strategist Prime deploying self-mutating countermeasures",
-                });
-              }}
+              onClick={handlePolymorphicDefenseTest}
               className="hover:border-amber-500/50 hover:text-amber-400 transition-all"
             >
               <Zap className="mr-2 h-4 w-4" />
@@ -288,13 +304,7 @@ const Dashboard = () => {
             </Button>
             <Button
               variant="outline"
-              onClick={() => {
-                simulateAttackScenario('nation-state');
-                toast({
-                  title: "Nation-State Simulation",
-                  description: "Testing against sophisticated state-sponsored attack vectors",
-                });
-              }}
+              onClick={handleNationStateTest}
               className="hover:border-red-500/50 hover:text-red-400 transition-all"
             >
               <Globe className="mr-2 h-4 w-4" />
