@@ -16,6 +16,11 @@ import { LiveThreatIntelligence } from '@/components/LiveThreatIntelligence';
 import { EnhancedNotificationCenter } from '@/components/EnhancedNotificationCenter';
 import { useRealTimeAPIs } from '@/hooks/useRealTimeAPIs';
 import { useToast } from '@/hooks/use-toast';
+import { QuantumThreatAnalysis } from '@/components/QuantumThreatAnalysis';
+import { BehavioralAnalysisEngine } from '@/components/BehavioralAnalysisEngine';
+import { NetworkTopologyVisualizer } from '@/components/NetworkTopologyVisualizer';
+import { AdvancedIncidentResponse } from '@/components/AdvancedIncidentResponse';
+import { ThreatHuntingDashboard } from '@/components/ThreatHuntingDashboard';
 
 const Dashboard = () => {
   const [threats, setThreats] = useState<any[]>([]);
@@ -214,6 +219,21 @@ const Dashboard = () => {
           </Card>
         ))}
       </div>
+
+      {/* Revolutionary Quantum Threat Analysis */}
+      <QuantumThreatAnalysis />
+
+      {/* Advanced Behavioral Analysis Engine */}
+      <BehavioralAnalysisEngine />
+
+      {/* Network Topology Visualizer */}
+      <NetworkTopologyVisualizer />
+
+      {/* Advanced Incident Response System */}
+      <AdvancedIncidentResponse />
+
+      {/* Threat Hunting Dashboard */}
+      <ThreatHuntingDashboard />
 
       {/* Advanced Analytics */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
